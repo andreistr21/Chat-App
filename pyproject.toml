@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "chat app"
+version = "0.1.0"
+description = ""
+authors = ["andreistr21 <andstra45@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^4.2.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
