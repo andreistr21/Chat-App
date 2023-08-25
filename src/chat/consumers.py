@@ -1,18 +1,18 @@
 import json
-from typing import Any, Dict, List
+from typing import Dict, List
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import InMemoryChannelLayer
 
 from chat.models import Message
-from chat.selectors import get_author, last_20_messages
+from chat.selectors import get_author, get_room, last_20_messages
 
 
 class ChatConsumer(WebsocketConsumer):
-    def fetch_messages(self, _) -> None:
+    def fetch_messages(self, data) -> None:
         """Fetches last 20 messages form database and send to the group"""
-        messages = last_20_messages()
+        messages = last_20_messages(data["room_id"])
         content = {
             "command": "messages",
             "messages": self.messages_to_json(messages),
@@ -23,9 +23,11 @@ class ChatConsumer(WebsocketConsumer):
         """Saves new message to database and send to room group"""
         author = data["from"]
         author_user = get_author(author)
+        room_obj = get_room(data["room_id"])
         message = Message.objects.create(
             author=author_user,
             content=data["message"],
+            room=room_obj
         )
 
         content = {
@@ -55,7 +57,7 @@ class ChatConsumer(WebsocketConsumer):
 
     def connect(self) -> None:
         """Joins room group"""
-        self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
+        self.room_name = self.scope["url_route"]["kwargs"]["room_id"]
         self.room_group_name = f"chat_{self.room_name}"
         self.channel_layer: InMemoryChannelLayer
 

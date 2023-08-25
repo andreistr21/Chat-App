@@ -6,10 +6,11 @@ def index(request):
     return render(request, "chat/index.html")
 
 
+# TODO: add decorator to check room existence and membership
 @login_required
-def room(request, room_name):
+def room(request, room_id):
     return render(
         request,
         "chat/room.html",
-        {"room_name": room_name, "username": request.user.username},
+        {"room_id": room_id, "username": request.user.username},
     )

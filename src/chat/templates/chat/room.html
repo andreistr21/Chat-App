@@ -14,13 +14,13 @@
         <input id="chat-message-submit" type="button" value="Send">
         <script>
             var username = "{{ username }}";
-            var roomName = "{{ room_name }}";
+            var roomId = "{{ room_id }}";
 
             const chatSocket = new WebSocket(
                 'ws://'
                 + window.location.host
                 + '/ws/chat/'
-                + roomName
+                + roomId
                 + '/'
             );
             chatSocket.onopen = function(e) {
@@ -28,7 +28,10 @@
             }
 
             function fetchMessages() {
-                chatSocket.send(JSON.stringify({'command': 'fetch_messages' }));
+                chatSocket.send(JSON.stringify({
+                    'command': 'fetch_messages',
+                    'room_id': roomId 
+                }));
             }
 
             chatSocket.onmessage = function(e) {
@@ -61,7 +64,8 @@
                 chatSocket.send(JSON.stringify({
                     'command': 'new_message',
                     'message': message,
-                    'from': username
+                    'from': username,
+                    'room_id': roomId,
                 }));
                 messageInputDom.value = '';
             };
