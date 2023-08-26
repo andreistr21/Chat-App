@@ -1,5 +1,5 @@
 import json
-from typing import Dict, List
+from typing import Dict
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
@@ -7,6 +7,7 @@ from channels.layers import InMemoryChannelLayer
 
 from chat.models import Message
 from chat.selectors import get_author, get_room, last_20_messages
+from chat.serializers import message_to_json, messages_to_json
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -15,7 +16,7 @@ class ChatConsumer(WebsocketConsumer):
         messages = last_20_messages(data["room_id"])
         content = {
             "command": "messages",
-            "messages": self.messages_to_json(messages),
+            "messages": messages_to_json(messages),
         }
         self.send_message(content)
 
@@ -25,30 +26,14 @@ class ChatConsumer(WebsocketConsumer):
         author_user = get_author(author)
         room_obj = get_room(data["room_id"])
         message = Message.objects.create(
-            author=author_user,
-            content=data["message"],
-            room=room_obj
+            author=author_user, content=data["message"], room=room_obj
         )
 
         content = {
             "command": "new_message",
-            "message": self.message_to_json(message),
+            "message": message_to_json(message),
         }
         return self.send_chat_message(content)
-
-    def messages_to_json(
-        self, messages: List[Message]
-    ) -> List[Dict[str, str]]:
-        """Serializes messages to JSON"""
-        return [self.message_to_json(message) for message in messages]
-
-    def message_to_json(self, message: Message) -> Dict[str, str]:
-        """Serializes a message to JSON"""
-        return {
-            "author": message.author.username,
-            "content": message.content,
-            "timestamp": str(message.timestamp),
-        }
 
     commands = {
         "fetch_messages": fetch_messages,
@@ -89,15 +74,11 @@ class ChatConsumer(WebsocketConsumer):
             },
         )
 
-    def send_message(
-        self, message: Dict
-    ) -> None:
+    def send_message(self, message: Dict) -> None:
         """Sends message to current user (WebSocket)"""
         self.send(text_data=json.dumps(message))
 
-    def chat_message(
-        self, event: Dict
-    ):
+    def chat_message(self, event: Dict):
         """Receives message from room group"""
         message = event["message"]
 
