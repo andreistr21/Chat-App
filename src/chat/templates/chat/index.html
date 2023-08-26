@@ -1,4 +1,3 @@
-<!-- chat/templates/chat/index.html -->
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -8,23 +7,17 @@
         <title>Chat Rooms</title>
     </head>
     <body>
-        What chat room would you like to enter?
+        {% comment %} What chat room would you like to enter?
         <br>
         <input id="room-name-input" type="text" size="100">
         <br>
-        <input id="room-name-submit" type="button" value="Enter">
-        <script>
-        document.querySelector('#room-name-input').focus();
-        document.querySelector('#room-name-input').onkeyup = function(e) {
-            if (e.key === 'Enter') {  // enter, return
-                document.querySelector('#room-name-submit').click();
-            }
-        };
-
-        document.querySelector('#room-name-submit').onclick = function(e) {
-            var roomName = document.querySelector('#room-name-input').value;
-            window.location.pathname = '/chat/' + roomName + '/';
-        };
-        </script>
+        <input id="room-name-submit" type="button" value="Enter"> {% endcomment %}
+        {% for chat_id, chat_name, chat_last_msg in chats_info %}
+            <a href="{% url 'chat:room' chat_id %}" class="chat-card">
+                <h3>{{ chat_name }}</h3>
+                <p>{{ chat_last_msg }}</p>
+            </a>
+            <br>
+        {% endfor %}
     </body>
 </html>

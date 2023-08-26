@@ -17,3 +17,17 @@ def get_author(username: str) -> User:
 
 def get_room(room_id: str) -> ChatRoom:
     return ChatRoom.objects.get(id=room_id)
+
+
+def get_user_chats(user: User) -> QuerySet[ChatRoom]:
+    return user.chat_rooms.all()  # type: ignore
+
+
+def get_3_members(room_obj: ChatRoom) -> str:
+    return ", ".join(room_obj.members.values_list("username", flat=True)[:3])
+
+
+def get_last_message(chat_room: ChatRoom) -> str:
+    return chat_room.message.order_by("-timestamp").values_list( # type: ignore
+        "content", flat=True
+    )[0]
