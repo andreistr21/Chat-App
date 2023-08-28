@@ -6,11 +6,11 @@ from channels.generic.websocket import WebsocketConsumer
 from channels.layers import InMemoryChannelLayer
 
 from chat.models import Message
-from chat.selectors import get_author, get_room, last_20_messages
+from chat.selectors import get_author, last_20_messages
 from chat.serializers import message_to_json, messages_to_json
+from chat.services import get_room_or_redirect
 
 
-# TODO: substitute all "get_room" with "get_room_or_redirect"
 class ChatConsumer(WebsocketConsumer):
     def fetch_messages(self, data) -> None:
         """Fetches last 20 messages form database and send to the group"""
@@ -25,7 +25,7 @@ class ChatConsumer(WebsocketConsumer):
         """Saves new message to database and send to room group"""
         author = data["from"]
         author_user = get_author(author)
-        room_obj = get_room(data["room_id"])
+        room_obj = get_room_or_redirect(data["room_id"])
         message = Message.objects.create(
             author=author_user, content=data["message"], room=room_obj
         )
