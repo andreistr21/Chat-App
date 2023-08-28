@@ -20,8 +20,16 @@ def index(request):
 # TODO: add decorator to check room existence and membership
 @login_required
 def room(request, room_id):
+    chat_rooms = get_user_chats(request.user)
+    chats_info = chats_list(chat_rooms)
+
     return render(
         request,
         "chat/room.html",
-        {"room_id": room_id, "username": request.user.username},
+        {
+            "room_id": room_id,
+            "username": request.user.username,
+            "chat_rooms": chat_rooms,
+            "chats_info": chats_info,
+        },
     )

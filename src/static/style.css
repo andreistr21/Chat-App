@@ -1,0 +1,16 @@
+.messenger-section {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  width: 100vw;
+  height: 100vh;
+}
+
+.no-chat-selected-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.no-chat-selected-text h3 {
+  width: fit-content;
+}

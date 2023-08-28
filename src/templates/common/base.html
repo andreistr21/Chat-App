@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="keywords" content="foo,bar" />
+        <meta name="description" content="foo" />
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href={% static 'normalize.css' %} />
+        <link rel="stylesheet" href={% static 'style.css' %} />
+        <title>
+            {% block title %}
+                Messenger
+            {% endblock title %}
+        </title>
+    </head>
+    <body>
+        {% block content %}
+        {% endblock content %}
+    </body>
+</html>
