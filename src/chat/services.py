@@ -1,8 +1,12 @@
 from typing import List, Tuple
+
+from django.conf import settings
 from django.db.models import QuerySet
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, resolve_url
 
 from chat.models import ChatRoom
-from chat.selectors import get_3_members, get_last_message
+from chat.selectors import get_3_members, get_last_message, get_room
 
 
 def chats_list(
@@ -18,3 +22,9 @@ def chats_list(
         chats_and_msgs.append((room_id, room_name, room_last_msg))
 
     return chats_and_msgs
+
+
+def get_room_or_redirect(room_id: str) -> ChatRoom | HttpResponseRedirect:
+    if room_obj := get_room(room_id):
+        return room_obj
+    return redirect(resolve_url(settings.CHATS_URL), permanent=False)

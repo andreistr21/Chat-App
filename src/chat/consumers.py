@@ -10,6 +10,7 @@ from chat.selectors import get_author, get_room, last_20_messages
 from chat.serializers import message_to_json, messages_to_json
 
 
+# TODO: substitute all "get_room" with "get_room_or_redirect"
 class ChatConsumer(WebsocketConsumer):
     def fetch_messages(self, data) -> None:
         """Fetches last 20 messages form database and send to the group"""

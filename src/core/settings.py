@@ -150,3 +150,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+# URLs
+CHATS_URL = "chat:index"

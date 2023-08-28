@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
+from chat.decorators import chat_membership
 from chat.selectors import get_user_chats
 from chat.services import chats_list
 
@@ -17,9 +18,9 @@ def index(request):
     )
 
 
-# TODO: add decorator to check room existence and membership
 @login_required
-def room(request, room_id):
+@chat_membership
+def room(request, room_id: str):
     chat_rooms = get_user_chats(request.user)
     chats_info = chats_list(chat_rooms)
 

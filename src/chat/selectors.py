@@ -15,8 +15,8 @@ def get_author(username: str) -> User:
     return get_user_model().objects.get(username=username)  # type: ignore
 
 
-def get_room(room_id: str) -> ChatRoom:
-    return ChatRoom.objects.get(id=room_id)
+def get_room(room_id: str) -> ChatRoom | None:
+    return ChatRoom.objects.filter(id=room_id).first()
 
 
 def get_user_chats(user: User) -> QuerySet[ChatRoom]:
