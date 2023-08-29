@@ -1,4 +1,5 @@
 {% extends 'common/base.html' %}
+{% load i18n %}
 {% block content %}
     <section class="messenger-section">
         <section class="chats-list-section">
@@ -13,7 +14,7 @@
         <section class="chat-section">
             {% block chat_section_block %}
                 <div class="no-chat-selected-text">
-                    <h3>Select a chat to start messaging</h3>
+                    <h3>{% trans "Select a chat to start messaging" %}</h3>
                 </div>
             {% endblock chat_section_block %}
         </section>
