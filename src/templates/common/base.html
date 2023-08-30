@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -14,6 +15,31 @@
         </title>
     </head>
     <body>
+        <header>
+            <nav>
+                {% get_current_language as current_language_code %}
+                {% get_available_languages as languages %}
+                {% get_language_info_list for languages as languages_info %}
+                <h5>{% trans "Language" %}:</h5>
+                <ul class="languages-list">
+                    {% for language in languages_info %}
+                        <li>
+                            <a href="/{{ language.code }}/"
+                               class="language-link {% if language.code == current_language_code %}selected{% endif %}">{{ language.name_local }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% if request.user.is_authenticated %}
+                    <h3>{{ request.user.username }}</h3>
+                    <ul class="nav-links">
+                        <li>
+                            <a href="#" class="nav-link">{% trans "Log out" %}</a>
+                        </li>
+                    </ul>
+                {% endif %}
+            </nav>
+        </header>
         {% block content %}
         {% endblock content %}
     </body>
