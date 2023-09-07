@@ -1,10 +1,12 @@
-from typing import List
+from typing import Any, List, Optional, Union
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
 
 from chat.models import ChatRoom, Message
+from chat.redis import get_redis_connection
+from chat.utils import construct_name_of_redis_list_for_channel_name
 
 
 def last_20_messages(room_id: str) -> List[Message]:
@@ -28,6 +30,35 @@ def get_3_members(room_obj: ChatRoom) -> str:
 
 
 def get_last_message(chat_room: ChatRoom) -> str:
-    return chat_room.message.order_by("-timestamp").values_list( # type: ignore
+    return chat_room.message.order_by("-timestamp").values_list(  # type: ignore
         "content", flat=True
-    )[0]
+    )[
+        0
+    ]
+
+
+def get_users_channels(
+    chat_members: list[User] | QuerySet[User],
+) -> list[list[Any | bytes]]:
+    """
+    Retrieves all channels names for user in one transaction and returns them.
+    """
+    redis_connection = get_redis_connection()
+    with redis_connection.pipeline() as redis_pipeline:
+        for user_obj in chat_members:
+            redis_pipeline.lrange(
+                construct_name_of_redis_list_for_channel_name(user_obj.pk),
+                0,
+                -1,
+            )
+
+        return redis_pipeline.execute()
+
+
+def get_chat_members(
+    room_obj: ChatRoom, user_to_exclude_obj: User
+) -> QuerySet[User]:
+    """
+    Returns all chat members except one specified.
+    """
+    return room_obj.members.all()  # .exclude(user_to_exclude_obj.pk)

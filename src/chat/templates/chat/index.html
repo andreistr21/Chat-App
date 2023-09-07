@@ -3,8 +3,10 @@
 {% block content %}
     <section class="messenger-section">
         <section class="chats-list-section">
-            {% for chat_id, chat_name, chat_last_msg in chats_info %}
-                <a href="{% url 'chat:room' chat_id %}" class="chat-card">
+            {% for room_id, chat_name, chat_last_msg in chats_info %}
+                <a href="{% url 'chat:room' room_id %}"
+                   id="{{ room_id }}"
+                   class="chat-card">
                     <h3>{{ chat_name }}</h3>
                     <p>{{ chat_last_msg }}</p>
                 </a>

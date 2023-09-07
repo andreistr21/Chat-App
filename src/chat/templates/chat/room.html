@@ -5,6 +5,8 @@
     <input id="chat-message-input" type="text" size="100">
     <br>
     <input id="chat-message-submit" type="button" value="Send">
+{% endblock chat_section_block %}
+{% block script %}
     <script>
         var username = "{{ username }}";
         var roomId = "{{ room_id }}";
@@ -37,6 +39,8 @@
             } else if (data['command'] === 'new_message'){
                 document.querySelector('#chat-log').value += (data['message'].content + '\n');
                 {% comment %} createMessage(data['message']); {% endcomment %}
+            } else if (data['command'] === 'chats_list_message'){
+                document.querySelector('.chats-list-section').prepend(document.querySelector('#' + data['room_id']));
             }
         };
 
@@ -63,4 +67,4 @@
             messageInputDom.value = '';
         };
     </script>
-{% endblock chat_section_block %}
+{% endblock script %}

@@ -6,7 +6,9 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, resolve_url
 
 from chat.models import ChatRoom
+from chat.redis import get_redis_connection
 from chat.selectors import get_3_members, get_last_message, get_room
+from chat.utils import construct_name_of_redis_list_for_channel_name
 
 
 def chats_list(
@@ -28,3 +30,25 @@ def get_room_or_redirect(room_id: str) -> ChatRoom | HttpResponseRedirect:
     if room_obj := get_room(room_id):
         return room_obj
     return redirect(resolve_url(settings.CHATS_URL), permanent=False)
+
+
+def save_channel_name(user_id: str, channel_name: str) -> None:
+    """
+    Appends redis list from the head with channel name.
+    """
+    redis_connection = get_redis_connection()
+    redis_connection.lpush(
+        construct_name_of_redis_list_for_channel_name(user_id), channel_name
+    )
+
+
+def remove_channel_name(user_id: str, channel_name: str) -> None:
+    """
+    Removes specified element from redis list.
+    """
+    redis_connection = get_redis_connection()
+    redis_connection.lrem(
+        construct_name_of_redis_list_for_channel_name(user_id),
+        -1,
+        channel_name,
+    )

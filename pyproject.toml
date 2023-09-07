@@ -12,6 +12,7 @@ djlint = "^1.32.1"
 channels = {extras = ["daphne"], version = "^4.0.0"}
 channels-redis = "^4.1.0"
 django-rosetta = "^0.9.9"
+python-dotenv = "^1.0.0"
 
 
 [build-system]
