@@ -3,10 +3,9 @@
 Header
 ==========
 */
-.language-link{
+.language-link {
   text-transform: capitalize;
 }
-
 
 /* 
 ==========
@@ -28,4 +27,7 @@ Chat
 }
 .no-chat-selected-text h3 {
   width: fit-content;
+}
+.unread {
+  color: red;
 }

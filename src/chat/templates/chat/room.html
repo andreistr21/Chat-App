@@ -34,13 +34,16 @@
             if (data['command'] === 'messages') {
                 for (let i=0; i<data['messages'].length; i++) {
                     document.querySelector('#chat-log').value += (data['messages'][i].content + '\n');
-                    {% comment %} createMessage(data['messages'][i]); {% endcomment %}
-            }
+                }
             } else if (data['command'] === 'new_message'){
                 document.querySelector('#chat-log').value += (data['message'].content + '\n');
-                {% comment %} createMessage(data['message']); {% endcomment %}
             } else if (data['command'] === 'chats_list_message'){
-                document.querySelector('.chats-list-section').prepend(document.querySelector('#' + data['room_id']));
+                var chat = document.querySelector('#' + data['room_id']);
+                chat.parentNode.removeChild(chat);
+                if (!chat.classList.contains("unread")) {
+                    chat.classList.add("unread");
+                }
+                document.querySelector('.chats-list-section').prepend(chat);
             }
         };
 
