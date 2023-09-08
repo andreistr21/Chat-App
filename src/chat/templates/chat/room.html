@@ -41,7 +41,7 @@
                 var chat = document.querySelector('#' + data['room_id']);
                 chat.parentNode.removeChild(chat);
                 chat.querySelector("p").textContent = data["message"]["content"]
-                if (!chat.classList.contains("unread")) {
+                if (!chat.classList.contains("unread") && !(chat.id == roomId)) {
                     chat.classList.add("unread");
                 }
                 document.querySelector('.chats-list-section').prepend(chat);
