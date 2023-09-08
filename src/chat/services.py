@@ -14,7 +14,10 @@ from chat.utils import construct_name_of_redis_list_for_channel_name
 def chats_list(
     chat_rooms: QuerySet[ChatRoom],
 ) -> List[Tuple[str, str, str]]:
-    """Retrieves chat rooms id, name and last message, and mappers it together"""
+    """
+    Retrieves chat rooms id, name, last message object, mappers it together, 
+    sorts by last message and returns.
+    """
     chats_and_msgs = []
     for chat_room in chat_rooms:
         room_id = chat_room.id
@@ -23,7 +26,7 @@ def chats_list(
 
         chats_and_msgs.append((room_id, room_name, room_last_msg))
 
-    return chats_and_msgs
+    return sorted(chats_and_msgs, key=lambda el: el[2].timestamp, reverse=True)  # type: ignore
 
 
 def get_room_or_redirect(room_id: str) -> ChatRoom | HttpResponseRedirect:
