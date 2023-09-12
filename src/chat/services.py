@@ -15,7 +15,7 @@ def chats_list(
     chat_rooms: QuerySet[ChatRoom],
 ) -> List[Tuple[str, str, str]]:
     """
-    Retrieves chat rooms id, name, last message object, mappers it together, 
+    Retrieves chat rooms id, name, last message object, mappers it together,
     sorts by last message and returns.
     """
     chats_and_msgs = []
@@ -37,12 +37,20 @@ def get_room_or_redirect(room_id: str) -> ChatRoom | HttpResponseRedirect:
 
 def save_channel_name(user_id: str, channel_name: str) -> None:
     """
-    Appends redis list from the head with channel name.
+    Appends redis list from the head with channel name and updates TTL.
     """
     redis_connection = get_redis_connection()
-    redis_connection.lpush(
-        construct_name_of_redis_list_for_channel_name(user_id), channel_name
-    )
+    redis_key_name = construct_name_of_redis_list_for_channel_name(user_id)
+    with redis_connection.pipeline() as redis_pipeline:
+        redis_pipeline.lpush(
+            redis_key_name,
+            channel_name,
+        )
+        redis_pipeline.expire(
+            redis_key_name, settings.USERS_CHANNELS_NAMES_TTL
+        )
+
+        redis_pipeline.execute()
 
 
 def remove_channel_name(user_id: str, channel_name: str) -> None:

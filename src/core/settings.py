@@ -163,3 +163,8 @@ CHANNEL_LAYERS = {
 
 # URLs
 CHATS_URL = "chat:index"
+
+# Redis
+# Number of seconds that specifies for how long list with channels names per
+# user will be preserved after the most recent save_channel_name call
+USERS_CHANNELS_NAMES_TTL = 86400
