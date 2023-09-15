@@ -1,10 +1,13 @@
 {% extends 'chat/index.html' %}
+{% load static %}
 {% block chat_section_block %}
-    <textarea id="chat-log" cols="100" rows="20"></textarea>
-    <br>
-    <input id="chat-message-input" type="text" size="100">
-    <br>
-    <input id="chat-message-submit" type="button" value="Send">
+    <div id="chat-log" class="chat-log"></div>
+    <div class="message-input">
+        <input id="chat-message-input" type="text" placeholder="Write a message...">
+        <button id="chat-message-submit" type="submit">
+            <img src="{% static "send.svg" %}" alt="alt" width=34>
+        </button>
+    </div>
 {% endblock chat_section_block %}
 {% block script %}
     <script>
@@ -29,12 +32,29 @@
             }));
         }
 
+        function newMessage(content) {
+            let newMessageDiv = document.createElement('div');
+            
+            newMessageDiv.className = 'message-card';
+            // Author
+            newMessageDiv.innerHTML = '<p class="message-author text-small"></p>';
+            // Content
+            newMessageDiv.innerHTML += '<p class="message-content">' + content + '</p>';
+            // Date
+            newMessageDiv.innerHTML += '<p class="message-date text-small">19:49, 15.09.2023</p>';
+
+            document.querySelector('#chat-log').appendChild(newMessageDiv);
+        }
+
         chatSocket.onmessage = function(e) {
             var data = JSON.parse(e.data);
             if (data['command'] === 'messages') {
                 for (let i=0; i<data['messages'].length; i++) {
-                    document.querySelector('#chat-log').value += (data['messages'][i].content + '\n');
+                    newMessage(data['messages'][i].content)
                 }
+                
+                const chatLog = document.querySelector("#chat-log");
+                chatLog.scrollTo(0, chatLog.scrollHeight);
             } else if (data['command'] === 'new_message'){
                 document.querySelector('#chat-log').value += (data['message'].content + '\n');
             } else if (data['command'] === 'chats_list_message'){
