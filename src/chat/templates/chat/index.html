@@ -7,10 +7,9 @@
                 <a href="{% url 'chat:room' room_id %}"
                    id="{{ room_id }}"
                    class="chat-card">
-                    <h3>{{ chat_name }}</h3>
-                    <p>{{ chat_last_msg.content }}</p>
+                    <h5>{{ chat_name }}</h5>
+                    <p class="text-small">{{ chat_last_msg.content }}</p>
                 </a>
-                <br>
             {% endfor %}
         </section>
         <section class="chat-section">
