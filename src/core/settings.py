@@ -127,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en"
 
-TIME_ZONE = "Poland"
+TIME_ZONE = "Europe/Warsaw"
 
 USE_I18N = True
 

@@ -263,6 +263,7 @@ Chats list
 }
 
 .no-chat-selected-text {
+  color: var(--white);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -327,6 +328,11 @@ Chat
 }
 .message-author {
   color: var(--primary-200);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.message-content{
+  padding-right: 116px;
 }
 .message-date {
   width: fit-content;

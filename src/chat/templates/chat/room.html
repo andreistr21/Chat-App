@@ -32,31 +32,55 @@
             }));
         }
 
-        function newMessage(content) {
+        function newMessage(author, content, dateStr) {
             let newMessageDiv = document.createElement('div');
             
+            // Classes
             newMessageDiv.className = 'message-card';
+            if (author == username) {
+                newMessageDiv.classList.add('my-message-card');
+            }
+
             // Author
-            newMessageDiv.innerHTML = '<p class="message-author text-small"></p>';
+            newMessageDiv.innerHTML = '<p class="message-author text-small">' + author + '</p>';
             // Content
             newMessageDiv.innerHTML += '<p class="message-content">' + content + '</p>';
             // Date
-            newMessageDiv.innerHTML += '<p class="message-date text-small">19:49, 15.09.2023</p>';
+            newMessageDiv.innerHTML += '<p class="message-date text-small">' + dateStr + '</p>';
 
             document.querySelector('#chat-log').appendChild(newMessageDiv);
+        }
+
+        function _toString(number) {
+            if (number < 10) {
+                return "0" + number.toString();
+            }
+            return number.toString();
+        }
+
+        function constructDate(dateStr) {
+            const date = new Date(dateStr);
+
+            const minutes = _toString(date.getMinutes());
+            const hourse = _toString(date.getHours());
+            const day = _toString(date.getDate());
+            const month = _toString(date.getMonth() + 1);
+            const year = _toString(date.getFullYear());
+
+            return hourse+ ':' + minutes + ", " + day + '-' + month + '-' + year
         }
 
         chatSocket.onmessage = function(e) {
             var data = JSON.parse(e.data);
             if (data['command'] === 'messages') {
                 for (let i=0; i<data['messages'].length; i++) {
-                    newMessage(data['messages'][i].content)
+                    dateStr = constructDate(data['messages'][i]['timestamp']);
+                    newMessage(data['messages'][i]['author'], data['messages'][i].content, dateStr)
+                    const p = "f";
                 }
-                
-                const chatLog = document.querySelector("#chat-log");
-                chatLog.scrollTo(0, chatLog.scrollHeight);
             } else if (data['command'] === 'new_message'){
-                document.querySelector('#chat-log').value += (data['message'].content + '\n');
+                dateStr = constructDate(data['message']['timestamp']);
+                newMessage(data['message']['author'], data['message'].content, dateStr)
             } else if (data['command'] === 'chats_list_message'){
                 var chat = document.querySelector('#' + data['room_id']);
                 chat.parentNode.removeChild(chat);
@@ -66,6 +90,8 @@
                 }
                 document.querySelector('.chats-list-section').prepend(chat);
             }
+            const chatLog = document.querySelector("#chat-log");
+            chatLog.scrollTo(0, chatLog.scrollHeight);
         };
 
         chatSocket.onclose = function(e) {
