@@ -273,13 +273,17 @@ Chats list
   width: fit-content;
 }
 .unread {
-  background-color: var(--primary-400);
+  background-color: var(--primary-500);
 }
 
 .chat-card {
   display: block;
   color: var(--textColor);
   padding: 8px 8px;
+}
+.selected-chat-card{
+  background-color: var(--primary-400);
+  font-weight: 500;
 }
 .chat-card h5 {
   line-height: 1.1;

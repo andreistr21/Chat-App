@@ -3,10 +3,10 @@
 {% block content %}
     <section class="messenger-section">
         <section class="chats-list-section">
-            {% for room_id, chat_name, chat_last_msg in chats_info %}
-                <a href="{% url 'chat:room' room_id %}"
-                   id="{{ room_id }}"
-                   class="chat-card">
+            {% for list_room_id, chat_name, chat_last_msg in chats_info %}
+                <a href="{% url 'chat:room' list_room_id %}"
+                   id="{{ list_room_id }}"
+                   class="chat-card {% if list_room_id == room_id %}selected-chat-card{% endif %}">
                     <h5>{{ chat_name }}</h5>
                     <p class="text-small">{{ chat_last_msg.content }}</p>
                 </a>
