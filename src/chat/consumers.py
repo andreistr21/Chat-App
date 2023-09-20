@@ -103,7 +103,7 @@ class ChatConsumer(WebsocketConsumer):
         """
         Sends message to each channel that belongs to user.
         """
-        chat_members = get_chat_members(room_obj, user_obj)
+        chat_members = get_chat_members(room_obj)
         channels_names = get_users_channels(chat_members)
 
         content = {

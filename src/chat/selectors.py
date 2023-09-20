@@ -33,7 +33,7 @@ def get_last_message(chat_room: ChatRoom) -> Message:
     """
     Returns last message of the chat.
     """
-    return chat_room.message.order_by("-timestamp")[0] # type: ignore
+    return chat_room.message.order_by("-timestamp")[0]  # type: ignore
 
 
 def get_users_channels(
@@ -54,10 +54,8 @@ def get_users_channels(
         return redis_pipeline.execute()
 
 
-def get_chat_members(
-    room_obj: ChatRoom, user_to_exclude_obj: User
-) -> QuerySet[User]:
+def get_chat_members(room_obj: ChatRoom) -> QuerySet[User]:
     """
-    Returns all chat members except one specified.
+    Returns all chat members.
     """
-    return room_obj.members.all()  # .exclude(user_to_exclude_obj.pk)
+    return room_obj.members.all()
