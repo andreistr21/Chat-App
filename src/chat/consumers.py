@@ -3,22 +3,19 @@ from typing import Callable, Dict
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from channels.layers import InMemoryChannelLayer, get_channel_layer
+from channels.layers import InMemoryChannelLayer
 from django.contrib.auth.models import User
 
 from chat.models import ChatRoom, Message
 from chat.selectors import (
     get_author,
     get_chat_members,
+    get_room,
     get_users_channels,
     last_20_messages,
 )
 from chat.serializers import message_to_json, messages_to_json
-from chat.services import (
-    get_room_or_redirect,
-    remove_channel_name,
-    save_channel_name,
-)
+from chat.services import remove_channel_name, save_channel_name
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -45,7 +42,10 @@ class ChatConsumer(WebsocketConsumer):
         """
         author = data["from"]
         author_obj = get_author(author)
-        room_obj = get_room_or_redirect(data["room_id"])
+        room_obj = get_room(data["room_id"])
+        # TODO: Something need to be done in case room doesn't exists anymore
+        if room_obj is None:
+            return None
         message = Message.objects.create(
             author=author_obj, content=data["message"], room=room_obj
         )

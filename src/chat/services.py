@@ -29,12 +29,6 @@ def chats_list(
     return sorted(chats_and_msgs, key=lambda el: el[2].timestamp, reverse=True)  # type: ignore
 
 
-def get_room_or_redirect(room_id: str) -> ChatRoom | HttpResponseRedirect:
-    if room_obj := get_room(room_id):
-        return room_obj
-    return redirect(resolve_url(settings.CHATS_URL), permanent=False)
-
-
 def save_channel_name(user_id: str, channel_name: str) -> None:
     """
     Appends redis list from the head with channel name and updates TTL.

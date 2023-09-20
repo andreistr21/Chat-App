@@ -16,6 +16,8 @@ python-dotenv = "^1.0.0"
 pytest-django = "^4.5.2"
 pytest-mock = "^3.11.1"
 fakeredis = "^2.18.1"
+mypy = "^1.5.1"
+django-stubs = "^4.2.4"
 
 
 [build-system]

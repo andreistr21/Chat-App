@@ -1,6 +1,7 @@
 import uuid
-from django.db import models
+
 from django.conf import settings
+from django.db import models
 
 
 class ChatRoom(models.Model):
@@ -13,9 +14,9 @@ class ChatRoom(models.Model):
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL, related_name="chat_rooms"
     )
-    
+
     room_name = models.CharField(max_length=255, null=True, blank=True)
-    
+
     class Meta:
         verbose_name = "Chat room"
         verbose_name_plural = "Chat rooms"
@@ -33,7 +34,7 @@ class Message(models.Model):
     room = models.ForeignKey(
         ChatRoom, related_name="message", on_delete=models.CASCADE
     )
-    
+
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 

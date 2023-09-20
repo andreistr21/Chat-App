@@ -13,7 +13,6 @@ def chat_membership(view_func):
     Decorator for views that checks that the room exists and the user belongs
     to it, redirecting to the chats list page if necessary.
     """
-
     @wraps(view_func)
     def wrapper(
         request, room_id: str, *args, **kwargs
@@ -23,7 +22,7 @@ def chat_membership(view_func):
             and room_obj.members.filter(id=request.user.id).exists()
         ):
             return view_func(request, room_id, *args, **kwargs)
-        
+
         return redirect(resolve_url(settings.CHATS_URL), permanent=False)
 
     return wrapper

@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Union
+from typing import Any, List
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
