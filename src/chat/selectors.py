@@ -1,4 +1,5 @@
 from typing import Any, List
+from uuid import UUID
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
@@ -9,12 +10,20 @@ from chat.redis import get_redis_connection
 from chat.utils import construct_name_of_redis_list_for_channel_name
 
 
-def last_20_messages(room_id: str) -> List[Message]:
-    return Message.objects.filter(room=room_id).order_by("-timestamp")[:20][::-1]  # type: ignore
+def last_20_messages(room_id_str: str) -> List[Message]:
+    """
+    Returns last 20 messages in room.
+    """
+    room_id_UUID = UUID(room_id_str)
+    return list(
+        Message.objects.filter(room=room_id_UUID).order_by("-timestamp")[:20][
+            ::-1
+        ]
+    )
 
 
 def get_author(username: str) -> User:
-    return get_user_model().objects.get(username=username)  # type: ignore
+    return get_user_model().objects.get(username=username)
 
 
 def get_room(room_id: str) -> ChatRoom | None:
@@ -22,7 +31,7 @@ def get_room(room_id: str) -> ChatRoom | None:
 
 
 def get_user_chats(user: User) -> QuerySet[ChatRoom]:
-    return user.chat_rooms.all()  # type: ignore
+    return user.chat_rooms.all()
 
 
 def get_3_members(room_obj: ChatRoom) -> str:
@@ -33,7 +42,7 @@ def get_last_message(chat_room: ChatRoom) -> Message:
     """
     Returns last message of the chat.
     """
-    return chat_room.message.order_by("-timestamp")[0]  # type: ignore
+    return chat_room.message.order_by("-timestamp")[0]
 
 
 def get_users_channels(

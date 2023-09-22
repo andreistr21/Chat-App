@@ -2,12 +2,10 @@ from typing import List, Tuple
 
 from django.conf import settings
 from django.db.models import QuerySet
-from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, resolve_url
 
 from chat.models import ChatRoom
 from chat.redis import get_redis_connection
-from chat.selectors import get_3_members, get_last_message, get_room
+from chat.selectors import get_3_members, get_last_message
 from chat.utils import construct_name_of_redis_list_for_channel_name
 
 

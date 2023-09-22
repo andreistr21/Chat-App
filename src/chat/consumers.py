@@ -53,9 +53,7 @@ class ChatConsumer(WebsocketConsumer):
         message_json = message_to_json(message)
 
         self.send_chat_message(message_json)
-        self.send_message_to_chats_list(
-            author_obj, message_json, room_obj  # type: ignore
-        )
+        self.send_message_to_chats_list(author_obj, message_json, room_obj)
 
     def connect(self) -> None:
         """Joins room group"""
