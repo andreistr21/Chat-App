@@ -37,6 +37,9 @@ def get_room(room_id: str) -> ChatRoom | None:
 
 
 def get_user_chats(user: User) -> QuerySet[ChatRoom]:
+    """
+    Returns all chats in which the user is a member.
+    """
     return user.chat_rooms.all()
 
 
