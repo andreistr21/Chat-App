@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 
 from chat.models import ChatRoom, Message
 from chat.selectors import (
-    get_author,
+    get_user,
     get_chat_members,
     get_room,
     get_users_channels,
@@ -41,10 +41,10 @@ class ChatConsumer(WebsocketConsumer):
         if he is online and not in this chat group.
         """
         author = data["from"]
-        author_obj = get_author(author)
+        author_obj = get_user(author)
         room_obj = get_room(data["room_id"])
-        # TODO: Something need to be done in case room doesn't exists anymore
-        if room_obj is None:
+        # TODO: Something need to be done in case room or author doesn't exists anymore
+        if room_obj is None  or author_obj is None:
             return None
         message = Message.objects.create(
             author=author_obj, content=data["message"], room=room_obj

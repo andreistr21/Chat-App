@@ -22,8 +22,8 @@ def last_20_messages(room_id_str: str) -> List[Message]:
     )
 
 
-def get_author(username: str) -> User:
-    return get_user_model().objects.get(username=username)
+def get_user(username: str) -> User | None:
+    return get_user_model().objects.filter(username=username).first()
 
 
 def get_room(room_id: str) -> ChatRoom | None:
