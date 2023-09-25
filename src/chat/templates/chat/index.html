@@ -8,7 +8,11 @@
                    id="{{ list_room_id }}"
                    class="chat-card {% if list_room_id == room_id %}selected-chat-card{% endif %}">
                     <h5>{{ chat_name }}</h5>
-                    <p class="text-small">{{ chat_last_msg.content }}</p>
+                    <p class="text-small">
+                        {% if chat_last_msg.content %}
+                            {{ chat_last_msg.content }}
+                        {% endif %}
+                    </p>
                 </a>
             {% endfor %}
         </section>

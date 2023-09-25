@@ -2,6 +2,8 @@ from typing import List, Tuple
 
 from django.conf import settings
 from django.db.models import QuerySet
+from datetime import datetime
+from django.utils.timezone import make_aware
 
 from chat.models import ChatRoom
 from chat.redis import get_redis_connection
@@ -24,7 +26,8 @@ def chats_list(
 
         chats_and_msgs.append((room_id, room_name, room_last_msg))
 
-    return sorted(chats_and_msgs, key=lambda el: el[2].timestamp, reverse=True)  # type: ignore
+    # TODO: Substitute 2000-01-01 with chat date creation
+    return sorted(chats_and_msgs, key=lambda el: (el[2].timestamp if el[2] is not None else make_aware(datetime(2000, 1, 1, 0, 0, 0))), reverse=True)  # type: ignore
 
 
 def save_channel_name(user_id: str, channel_name: str) -> None:

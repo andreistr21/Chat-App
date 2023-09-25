@@ -50,11 +50,11 @@ def get_3_members(room_obj: ChatRoom) -> str:
     return ", ".join(room_obj.members.values_list("username", flat=True)[:3])
 
 
-def get_last_message(chat_room: ChatRoom) -> Message:
+def get_last_message(chat_room: ChatRoom) -> Message | None:
     """
-    Returns last message of the chat.
+    Returns last message of the chat or empty string.
     """
-    return chat_room.message.order_by("-timestamp")[0]
+    return chat_room.message.order_by("-timestamp").first()
 
 
 def get_users_channels(
