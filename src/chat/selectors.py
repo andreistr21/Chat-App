@@ -23,10 +23,16 @@ def last_20_messages(room_id_str: str) -> List[Message]:
 
 
 def get_user(username: str) -> User | None:
+    """
+    Returns User object or None if don't exists.
+    """
     return get_user_model().objects.filter(username=username).first()
 
 
 def get_room(room_id: str) -> ChatRoom | None:
+    """
+    Returns room object or None if don't exists.
+    """
     return ChatRoom.objects.filter(id=room_id).first()
 
 
