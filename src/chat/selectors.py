@@ -44,6 +44,9 @@ def get_user_chats(user: User) -> QuerySet[ChatRoom]:
 
 
 def get_3_members(room_obj: ChatRoom) -> str:
+    """
+    Returns first 3 or less, if don't exists, members of room as a string or empty string.
+    """
     return ", ".join(room_obj.members.values_list("username", flat=True)[:3])
 
 
