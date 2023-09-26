@@ -1,3 +1,4 @@
+from typing import Generator
 import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
@@ -15,3 +16,11 @@ def user() -> User:
 @pytest.fixture
 def clear_redis_connection_cache():
     get_redis_connection.cache_clear()
+
+
+@pytest.fixture
+def clear_redis_data():
+    yield
+
+    redis_connection = get_redis_connection()
+    redis_connection.flushdb()
