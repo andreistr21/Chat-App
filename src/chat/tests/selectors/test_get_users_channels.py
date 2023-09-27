@@ -1,14 +1,11 @@
-from typing import Generator
-
 import pytest
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from fakeredis import FakeStrictRedis
 from pytest_mock import MockerFixture
 from redis import Redis
 
 from chat.redis import get_redis_connection
 from chat.selectors import get_users_channels
+from chat.tests.services import multiple_users_generator
 
 
 def _add_data_to_redis(
@@ -32,22 +29,10 @@ def _construct_name_of_redis_list_for_channel_name(user_id: str | int) -> str:
     return f"asgi:users_channels_names:{user_id}"
 
 
-def _multiple_users() -> Generator[User, None, None]:
-    """
-    Generates users.
-    """
-    counter = 0
-    while True:
-        yield get_user_model().objects.create(
-            username=f"test-user_{counter}", password="test-password"
-        )
-        counter += 1
-
-
 @pytest.mark.django_db
 @pytest.mark.parametrize("num_users", (0, 1, 5))
 @pytest.mark.parametrize("num_channels", (0, 1, 5, 10, 30))
-def test_return_values_and_transaction_used(
+def test_return_values(
     clear_redis_data: None,
     mocker: MockerFixture,
     num_channels: int,
@@ -61,7 +46,7 @@ def test_return_values_and_transaction_used(
 
     redis_connection = get_redis_connection()
 
-    multiple_users = _multiple_users()
+    multiple_users = multiple_users_generator()
     users = [next(multiple_users) for _ in range(num_users)]
 
     expected_channels = [
