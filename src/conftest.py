@@ -1,15 +1,17 @@
-from typing import Generator
 import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 
 from chat.redis import get_redis_connection
 
+TEST_USERNAME = "test-user"
+TEST_PASSWORD = "test-password"
+
 
 @pytest.fixture
 def user() -> User:
     return get_user_model().objects.create(
-        username="test-user", password="test-password"
+        username=TEST_USERNAME, password=TEST_PASSWORD
     )
 
 

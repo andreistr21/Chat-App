@@ -9,7 +9,9 @@ def messages_to_json(messages: List[Message]) -> List[Dict[str, str]]:
 
 
 def message_to_json(message: Message) -> Dict[str, str]:
-    """Serializes a message to JSON"""
+    """
+    Serializes a message to JSON
+    """
     return {
         "author": message.author.username,
         "content": message.content,
