@@ -5,7 +5,7 @@ from redis import Redis
 
 from chat.redis import get_redis_connection
 from chat.selectors import get_users_channels
-from chat.tests.services import multiple_users_generator
+from chat.tests.services import construct_name_of_redis_list_for_channel_name_test_method, multiple_users_generator
 
 
 def _add_data_to_redis(
@@ -17,16 +17,13 @@ def _add_data_to_redis(
     data = []
     for i in range(num_channels):
         redis_connection.lpush(
-            _construct_name_of_redis_list_for_channel_name(user_id),
+            construct_name_of_redis_list_for_channel_name_test_method(user_id),
             f"name_{i}",
         )
         data.append(f"name_{i}".encode())
 
     return data[::-1]
 
-
-def _construct_name_of_redis_list_for_channel_name(user_id: str | int) -> str:
-    return f"asgi:users_channels_names:{user_id}"
 
 
 @pytest.mark.django_db
@@ -41,7 +38,7 @@ def test_return_values(
     redis_patched = mocker.patch("chat.redis.from_url", FakeStrictRedis)
     mocker.patch(
         "chat.selectors.construct_name_of_redis_list_for_channel_name",
-        _construct_name_of_redis_list_for_channel_name,
+        construct_name_of_redis_list_for_channel_name_test_method,
     )
 
     redis_connection = get_redis_connection()
