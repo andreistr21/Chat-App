@@ -80,3 +80,8 @@ def get_chat_members(room_obj: ChatRoom) -> QuerySet[User]:
     Returns all chat members.
     """
     return room_obj.members.all()
+
+
+# TODO: Add tests
+def is_chat_member(user_id: str | int, room: ChatRoom) -> bool:
+    return room.members.filter(id=user_id).exists()
