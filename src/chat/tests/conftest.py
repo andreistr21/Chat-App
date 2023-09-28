@@ -11,3 +11,8 @@ def room(user: User) -> ChatRoom:
     room.members.add(user)
 
     return room
+
+@pytest.fixture
+@pytest.mark.django_db
+def room_no_members(user: User) -> ChatRoom:
+    return ChatRoom.objects.create(admin=user)
