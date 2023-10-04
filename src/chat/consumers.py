@@ -4,6 +4,7 @@ from typing import Callable, Dict
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import InMemoryChannelLayer
+from django.core.exceptions import ObjectDoesNotExist
 
 from chat.models import ChatRoom, Message
 from chat.selectors import (
@@ -11,6 +12,7 @@ from chat.selectors import (
     get_room,
     get_user,
     get_users_channels,
+    is_chat_member,
     last_20_messages,
 )
 from chat.serializers import message_to_json, messages_to_json
@@ -58,6 +60,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self) -> None:
         """Joins room group"""
         self.room_name = self.scope["url_route"]["kwargs"]["room_id"]
+
+        if not await sync_to_async(is_chat_member)(
+            self.scope["user"].id, self.room_name
+        ):
+            raise ObjectDoesNotExist(
+                "User is not authorized to join this room or room doesn't"
+                " exists."
+            )
+
         self.room_group_name = f"chat_{self.room_name}"
         self.channel_layer: InMemoryChannelLayer
 

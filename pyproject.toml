@@ -18,6 +18,7 @@ pytest-mock = "^3.11.1"
 fakeredis = "^2.18.1"
 mypy = "^1.5.1"
 django-stubs = "^4.2.4"
+pytest-asyncio = "^0.21.1"
 
 
 [build-system]
