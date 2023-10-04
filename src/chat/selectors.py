@@ -83,8 +83,10 @@ def get_chat_members(room_obj: ChatRoom) -> QuerySet[User]:
 
 
 # TODO: Add tests
-def is_chat_member(user_id: int, room: ChatRoom) -> bool:
+def is_chat_member(user_id: int, room_id: str) -> bool:
     """
     Returns True if user is a member of chat room, False otherwise.
     """
-    return room.members.filter(id=user_id).exists()
+    if room := get_room(room_id):
+        return room.members.filter(id=user_id).exists()
+    return False
