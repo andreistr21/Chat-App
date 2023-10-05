@@ -4,10 +4,9 @@ from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, resolve_url
 
-from chat.selectors import get_room, is_chat_member
+from chat.selectors import is_chat_member
 
 
-# TODO: Update tests
 def chat_membership(view_func):
     """
     Decorator for views that checks that the room exists and the user belongs

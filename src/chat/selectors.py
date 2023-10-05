@@ -82,7 +82,6 @@ def get_chat_members(room_obj: ChatRoom) -> QuerySet[User]:
     return room_obj.members.all()
 
 
-# TODO: Update tests
 def is_chat_member(user_id: int, room_id: str) -> bool:
     """
     Returns True if user is a member of chat room, False otherwise.
