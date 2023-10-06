@@ -20,13 +20,6 @@ from chat.services import remove_channel_name, save_channel_name
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.commands: dict[str, Callable] = {
-            "fetch_messages": self.fetch_messages,
-            "new_message": self.new_message,
-        }
-
     async def fetch_messages(self, data) -> None:
         """Fetches last 20 messages form database and send to the group"""
         messages = await sync_to_async(last_20_messages)(data["room_id"])
@@ -90,7 +83,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data: str) -> None:
         """Receives message from WebSocket"""
         data = json.loads(text_data)
-        func = self.commands[data["command"]]
+        command = data["command"]
+        match command:
+            case "fetch_messages":
+                func = self.fetch_messages
+            case "new_message":
+                func = self.new_message
+
         await func(data)
 
     async def send_chat_message(self, message_json: Dict[str, str]) -> None:
