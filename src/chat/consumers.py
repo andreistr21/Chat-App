@@ -1,12 +1,12 @@
 import json
-from typing import Callable, Dict
+from typing import Dict
 
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import InMemoryChannelLayer
 from django.core.exceptions import ObjectDoesNotExist
 
-from chat.models import ChatRoom, Message
+from chat.models import ChatRoom
 from chat.selectors import (
     get_chat_members,
     get_room,
@@ -16,15 +16,21 @@ from chat.selectors import (
     last_20_messages,
 )
 from chat.serializers import message_to_json, messages_to_json
-from chat.services import remove_channel_name, save_channel_name
+from chat.services import (
+    create_message,
+    remove_channel_name,
+    save_channel_name,
+)
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
+    reload_page_data = {"command": "reload_page"}
+
     async def fetch_messages(self, data) -> None:
         """
         Fetches last 20 messages form database and sends to the user
         """
-        
+
         messages = await sync_to_async(last_20_messages)(data["room_id"])
         content = {
             "command": "messages",
@@ -37,15 +43,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
         Saves new message to database and send to room group and to each member
         if he is online and not in this chat group.
         """
+
         author = data["from"]
         author_obj = await sync_to_async(get_user)(author)
         room_obj = await sync_to_async(get_room)(data["room_id"])
-        # TODO: Something need to be done in case room or author doesn't exists anymore
+        # TODO: Add handler to frontend. (Something need to be done in case room or author doesn't exists anymore)
         if room_obj is None or author_obj is None:
-            return None
-        # TODO: Move creation to services
-        message = await sync_to_async(Message.objects.create)(
-            author=author_obj, content=data["message"], room=room_obj
+            return await self.send_message(self.reload_page_data)
+        message = await sync_to_async(create_message)(
+            author_obj, room_obj, data["message"]
         )
 
         message_json = await sync_to_async(message_to_json)(message)

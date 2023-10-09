@@ -1,9 +1,10 @@
+from datetime import datetime
 from typing import List, Tuple
 from uuid import UUID
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.db.models import QuerySet
-from datetime import datetime
 from django.utils.timezone import make_aware
 
 from chat.models import ChatRoom, Message
@@ -66,4 +67,17 @@ def remove_channel_name(user_id: str, channel_name: str) -> None:
         construct_name_of_redis_list_for_channel_name(user_id),
         -1,
         channel_name,
+    )
+
+
+# TODO: Add tests
+def create_message(
+    author_obj: User, room_obj: ChatRoom, msg_content: str
+) -> Message:
+    """
+    Creates and returns message.
+    """
+
+    return Message.objects.create(
+        author=author_obj, content=msg_content, room=room_obj
     )
