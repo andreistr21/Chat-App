@@ -12,7 +12,7 @@ from pytest_mock import MockerFixture
 
 from chat.consumers import ChatConsumer
 from chat.models import ChatRoom, Message
-from chat.serializers import messages_to_json
+from chat.serializers import messages_to_json, message_to_json
 
 
 @pytest.fixture
@@ -265,3 +265,129 @@ class TestChatConsumerFetchMessages:
             await communicator.receive_json_from(timeout=0.1)
 
         send_message_patched.assert_called_once_with(content)
+
+
+@pytest.mark.django_db
+@pytest.mark.asyncio
+class TestChatConsumerNewMessage:
+    data = {
+        "command": "new_message",
+        "message": "web-socket message content",
+        "from": "some username",
+        "room_id": "some room-id",
+    }
+    reload_page_data = {"command": "reload_page"}
+
+    async def test_new_message_success(
+        self,
+        mocker: MockerFixture,
+        communicator: WebsocketCommunicator,
+        async_room: ChatRoom,
+    ):
+        # Arrange
+        user = async_room.admin
+        self.data["from"] = str(user.id)
+        self.data["room_id"] = str(async_room.id)
+        message = await sync_to_async(Message.objects.create)(
+            author=user, room=async_room, content="test message content"
+        )
+        message_json = await sync_to_async(message_to_json)(message)
+
+        get_user_patched = mocker.patch(
+            "chat.consumers.get_user", return_value=user
+        )
+        get_room_patched = mocker.patch(
+            "chat.consumers.get_room", return_value=async_room
+        )
+        create_message_patched = mocker.patch(
+            "chat.consumers.create_message", return_value=message
+        )
+        message_to_json_patched = mocker.patch(
+            "chat.consumers.message_to_json", return_value=message_json
+        )
+        send_chat_message_patched = mocker.patch.object(
+            ChatConsumer, "send_chat_message", return_value=None
+        )
+        send_message_to_chats_list_patched = mocker.patch.object(
+            ChatConsumer, "send_message_to_chats_list", return_value=None
+        )
+
+        # Actions
+        await communicator.send_json_to(self.data)
+        # Since send_chat_message and send_message_to_chats_list are mocked, data won't be sent back.
+        with pytest.raises(TimeoutError):
+            await communicator.receive_json_from(timeout=0.1)
+
+        # Assertions
+        get_user_patched.assert_called_once_with(str(user.id))
+        get_room_patched.assert_called_once_with(str(async_room.id))
+        create_message_patched.assert_called_once_with(
+            user, async_room, self.data["message"]
+        )
+        message_to_json_patched.assert_called_once_with(message)
+        send_chat_message_patched.assert_called_once_with(message_json)
+        send_message_to_chats_list_patched.assert_called_once_with(
+            message_json, async_room
+        )
+
+    @pytest.mark.parametrize(
+        ["author_obj_is_none", "room_obj_is_none"],
+        [(True, False), (False, True), (True, True)],
+    )
+    async def test_new_message_fail(
+        self,
+        mocker: MockerFixture,
+        communicator: WebsocketCommunicator,
+        async_room: ChatRoom,
+        author_obj_is_none: bool,
+        room_obj_is_none: bool,
+    ):
+        # Arrange
+        user = async_room.admin
+        self.data["from"] = (
+            "unexistent user" if author_obj_is_none else str(user.id)
+        )
+        self.data["room_id"] = (
+            "unexistent room" if room_obj_is_none else str(async_room.id)
+        )
+
+        get_user_return_value = None if author_obj_is_none else user
+        get_user_patched = mocker.patch(
+            "chat.consumers.get_user", return_value=get_user_return_value
+        )
+        get_room_return_value = None if room_obj_is_none else async_room
+        get_room_patched = mocker.patch(
+            "chat.consumers.get_room", return_value=get_room_return_value
+        )
+        send_message_patched = mocker.patch.object(
+            ChatConsumer, "send_message", return_value=None
+        )
+
+        create_message_patched = mocker.patch(
+            "chat.consumers.create_message", return_value=None
+        )
+        message_to_json_patched = mocker.patch(
+            "chat.consumers.message_to_json", return_value=None
+        )
+        send_chat_message_patched = mocker.patch.object(
+            ChatConsumer, "send_chat_message", return_value=None
+        )
+        send_message_to_chats_list_patched = mocker.patch.object(
+            ChatConsumer, "send_message_to_chats_list", return_value=None
+        )
+
+        # Actions
+        await communicator.send_json_to(self.data)
+        # Since send_chat_message and send_message_to_chats_list are mocked, data won't be sent back.
+        with pytest.raises(TimeoutError):
+            await communicator.receive_json_from(timeout=0.1)
+
+        # Assertions
+        get_user_patched.assert_called_once_with(self.data["from"])
+        get_room_patched.assert_called_once_with(self.data["room_id"])
+        send_message_patched.assert_called_once_with(self.reload_page_data)
+
+        create_message_patched.assert_not_called()
+        message_to_json_patched.assert_not_called()
+        send_chat_message_patched.assert_not_called()
+        send_message_to_chats_list_patched.assert_not_called()
