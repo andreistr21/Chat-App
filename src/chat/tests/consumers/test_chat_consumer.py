@@ -138,7 +138,7 @@ class TestChatConsumerConnect:
         with pytest.raises(
             ObjectDoesNotExist,
         ):
-            await communicator_no_conn.connect()
+            await communicator_no_conn.connect(timeout=0.1)
 
 
 @pytest.mark.asyncio
