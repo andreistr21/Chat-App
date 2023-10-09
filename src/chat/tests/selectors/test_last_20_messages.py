@@ -1,7 +1,6 @@
 from time import sleep
 
 import pytest
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 
 from chat.models import ChatRoom, Message
@@ -61,6 +60,6 @@ def test_order_returned_items(num_messages, user) -> None:
     room_obj = _get_chat_room(user, num_messages)
     messages = last_20_messages(str(room_obj.id))
 
-    expected_messages = list(Message.objects.order_by("-timestamp")[:20][::-1])
+    expected_messages = list(room_obj.message.order_by("-timestamp")[:20][::-1])
 
     assert messages == expected_messages
