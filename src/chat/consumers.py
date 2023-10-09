@@ -21,7 +21,10 @@ from chat.services import remove_channel_name, save_channel_name
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def fetch_messages(self, data) -> None:
-        """Fetches last 20 messages form database and send to the group"""
+        """
+        Fetches last 20 messages form database and sends to the user
+        """
+        
         messages = await sync_to_async(last_20_messages)(data["room_id"])
         content = {
             "command": "messages",

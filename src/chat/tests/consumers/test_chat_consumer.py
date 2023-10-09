@@ -1,27 +1,48 @@
 import json
+from asyncio import sleep
 from uuid import uuid4
 
 import pytest
+from asgiref.sync import sync_to_async
 from channels.layers import InMemoryChannelLayer, get_channel_layer
 from channels.testing import WebsocketCommunicator
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from pytest_mock import MockerFixture
 
 from chat.consumers import ChatConsumer
-from chat.models import ChatRoom
+from chat.models import ChatRoom, Message
+from chat.serializers import messages_to_json
 
 
 @pytest.fixture
-def communicator_no_conn(room: ChatRoom) -> WebsocketCommunicator:
+async def async_user():
+    return await sync_to_async(User.objects.create)(
+        username=f"test-user-{uuid4()}", password="test-password"
+    )
+
+
+@pytest.fixture
+async def async_room(async_user: User) -> ChatRoom:
+    room = await sync_to_async(ChatRoom.objects.create)(admin=async_user)
+    await sync_to_async(room.members.add)(async_user)
+
+    return room
+
+
+@pytest.fixture
+async def communicator_no_conn(async_room: ChatRoom) -> WebsocketCommunicator:
     """
     Returns communicator that is not connected yet.
     """
     communicator = WebsocketCommunicator(
         ChatConsumer.as_asgi(),
-        f"/ws/chat/{room.id}",
+        f"/ws/chat/{async_room.id}",
     )
-    communicator.scope["url_route"] = {"kwargs": {"room_id": str(room.id)}}
-    communicator.scope["user"] = room.admin
+    communicator.scope["url_route"] = {
+        "kwargs": {"room_id": str(async_room.id)}
+    }
+    communicator.scope["user"] = async_room.admin
 
     communicator.scope["channel_layer"] = InMemoryChannelLayer()
 
@@ -58,6 +79,35 @@ async def communicator(
     yield communicator_no_discon
 
     await communicator_no_discon.disconnect()
+
+
+async def _async_create_room(user_obj: User) -> ChatRoom:
+    chat_room = await sync_to_async(ChatRoom.objects.create)(admin=user_obj)
+    await sync_to_async(chat_room.members.add)(user_obj)
+
+    return chat_room
+
+
+async def _async_get_chat_room(
+    user: User, num_messages: int
+) -> tuple[ChatRoom, list[Message]]:
+    """
+    Creates user and room objects, and appends room with specified number of
+    messages.
+    """
+
+    room_obj = await _async_create_room(user)
+    messages = []
+    for i in range(num_messages):
+        messages.append(
+            await sync_to_async(Message.objects.create)(
+                author=user, room=room_obj, content=f"async-test-message-{i}"
+            )
+        )
+        # Necessary for difference in timestamps
+        await sleep(0.0001)
+
+    return room_obj, messages
 
 
 @pytest.mark.asyncio
@@ -176,3 +226,42 @@ class TestChatConsumerReceive:
         calls = new_message_patched.call_args_list
         assert len(calls) == 1
         assert calls[0] == mocker.call(json.loads(data))
+
+
+@pytest.mark.django_db
+@pytest.mark.asyncio
+class TestChatConsumerFetchMessages:
+    data = {
+        "command": "fetch_messages",
+        "message": "some message",
+        "from": "some username",
+        "room_id": "room-id",
+    }
+
+    async def test_send_message_called(
+        self,
+        mocker: MockerFixture,
+        communicator: WebsocketCommunicator,
+        async_user: User,
+    ):
+        room, messages = await _async_get_chat_room(async_user, 5)
+        self.data["room_id"] = str(room.id)
+        messages_json = await sync_to_async(messages_to_json)(messages)
+        mocker.patch("chat.consumers.last_20_messages", return_value=[])
+        mocker.patch(
+            "chat.consumers.messages_to_json", return_value=messages_json
+        )
+        send_message_patched = mocker.patch.object(
+            ChatConsumer, "send_message", return_value=None
+        )
+        content = {
+            "command": "messages",
+            "messages": messages_json,
+        }
+
+        await communicator.send_json_to(self.data)
+        # Since send_message mocked, data won't be sent back.
+        with pytest.raises(TimeoutError):
+            await communicator.receive_json_from(timeout=0.1)
+
+        send_message_patched.assert_called_once_with(content)
