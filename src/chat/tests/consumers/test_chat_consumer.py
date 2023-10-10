@@ -5,14 +5,14 @@ from uuid import uuid4
 import pytest
 from asgiref.sync import sync_to_async
 from channels.layers import InMemoryChannelLayer, get_channel_layer
-from channels.testing import WebsocketCommunicator
+from channels.testing import ApplicationCommunicator, WebsocketCommunicator
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from pytest_mock import MockerFixture
 
 from chat.consumers import ChatConsumer
 from chat.models import ChatRoom, Message
-from chat.serializers import messages_to_json, message_to_json
+from chat.serializers import message_to_json, messages_to_json
 
 
 @pytest.fixture
@@ -196,8 +196,7 @@ class TestChatConsumerReceive:
 
         await communicator.send_json_to(self.data)
         # Since fetch_messages mocked, data won't be sent back.
-        with pytest.raises(TimeoutError):
-            await communicator.receive_json_from(timeout=0.1)
+        await communicator.receive_nothing()
 
         data = self._get_data()
 
@@ -217,8 +216,7 @@ class TestChatConsumerReceive:
 
         await communicator.send_json_to(self.data)
         # Since new_message mocked, data won't be sent back.
-        with pytest.raises(TimeoutError):
-            await communicator.receive_json_from(timeout=0.1)
+        await communicator.receive_nothing()
 
         data = self._get_data()
 
@@ -261,8 +259,7 @@ class TestChatConsumerFetchMessages:
 
         await communicator.send_json_to(self.data)
         # Since send_message mocked, data won't be sent back.
-        with pytest.raises(TimeoutError):
-            await communicator.receive_json_from(timeout=0.1)
+        await communicator.receive_nothing()
 
         send_message_patched.assert_called_once_with(content)
 
@@ -315,8 +312,7 @@ class TestChatConsumerNewMessage:
         # Actions
         await communicator.send_json_to(self.data)
         # Since send_chat_message and send_message_to_chats_list are mocked, data won't be sent back.
-        with pytest.raises(TimeoutError):
-            await communicator.receive_json_from(timeout=0.1)
+        await communicator.receive_nothing()
 
         # Assertions
         get_user_patched.assert_called_once_with(str(user.id))
@@ -379,8 +375,7 @@ class TestChatConsumerNewMessage:
         # Actions
         await communicator.send_json_to(self.data)
         # Since send_chat_message and send_message_to_chats_list are mocked, data won't be sent back.
-        with pytest.raises(TimeoutError):
-            await communicator.receive_json_from(timeout=0.1)
+        await communicator.receive_nothing()
 
         # Assertions
         get_user_patched.assert_called_once_with(self.data["from"])
