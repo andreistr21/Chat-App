@@ -70,14 +70,12 @@ def remove_channel_name(user_id: str, channel_name: str) -> None:
     )
 
 
-# TODO: Add tests
 def create_message(
     author_obj: User, room_obj: ChatRoom, msg_content: str
 ) -> Message:
     """
     Creates and returns message.
     """
-
     return Message.objects.create(
         author=author_obj, content=msg_content, room=room_obj
     )
