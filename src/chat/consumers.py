@@ -139,11 +139,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 )
 
     async def send_message(self, message: Dict) -> None:
-        """Sends message to current user (WebSocket)"""
+        """
+        Sends message to a current user (WebSocket).
+        """
         await self.send(text_data=json.dumps(message))
 
     async def chat_message(self, event: Dict):
-        """Receives message from room group"""
+        """
+        Receives message from a room group.
+        """
         message = event["message"]
 
         await self.send_message(message)
