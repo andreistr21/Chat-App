@@ -5,6 +5,7 @@ from django.views.generic import RedirectView
 
 urlpatterns = i18n_patterns(
     path("chat/", include("chat.urls")),
+    path("users/", include("users.urls")),
     path("", RedirectView.as_view(pattern_name="chat:index")),
     path("admin/", admin.site.urls),
     path("rosetta/", include("rosetta.urls")),
