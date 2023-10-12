@@ -16,21 +16,6 @@ from chat.serializers import message_to_json, messages_to_json
 
 
 @pytest.fixture
-async def async_user():
-    return await sync_to_async(User.objects.create)(
-        username=f"test-user-{uuid4()}", password="test-password"
-    )
-
-
-@pytest.fixture
-async def async_room(async_user: User) -> ChatRoom:
-    room = await sync_to_async(ChatRoom.objects.create)(admin=async_user)
-    await sync_to_async(room.members.add)(async_user)
-
-    return room
-
-
-@pytest.fixture
 async def communicator_no_conn(async_room: ChatRoom) -> WebsocketCommunicator:
     """
     Returns communicator that is not connected yet.

@@ -1,4 +1,7 @@
+from uuid import uuid4
+
 import pytest
+from asgiref.sync import sync_to_async
 from django.contrib.auth.models import User
 from django.test import Client
 
@@ -32,3 +35,18 @@ def user_client(client: Client, user: User) -> Client:
     """
     client.force_login(user)
     return client
+
+
+@pytest.fixture
+async def async_user():
+    return await sync_to_async(User.objects.create)(
+        username=f"test-user-{uuid4()}", password="test-password"
+    )
+
+
+@pytest.fixture
+async def async_room(async_user: User) -> ChatRoom:
+    room = await sync_to_async(ChatRoom.objects.create)(admin=async_user)
+    await sync_to_async(room.members.add)(async_user)
+
+    return room
