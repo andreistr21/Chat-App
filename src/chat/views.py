@@ -23,6 +23,7 @@ def index(request):
     )
 
 
+@require_http_methods(["GET"])
 @login_required
 @chat_membership
 def room(request, room_id: str):
