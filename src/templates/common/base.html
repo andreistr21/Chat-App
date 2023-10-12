@@ -34,7 +34,7 @@
                     <h5 class="username-text">{{ request.user.username }}</h5>
                     <ul class="nav-links">
                         <li>
-                            <a href="#" class="nav-link btn">{% trans "Log out" %}</a>
+                            <a href="{% url "users:logout" %}" class="nav-link btn">{% trans "Log out" %}</a>
                         </li>
                     </ul>
                 {% endif %}

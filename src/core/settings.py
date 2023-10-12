@@ -166,6 +166,7 @@ CHANNEL_LAYERS = {
 CHATS_URL = "chat:index"
 LOGIN_REDIRECT_URL = "chat:index"
 LOGIN_URL = "users:login"
+LOGOUT_REDIRECT_URL = "users:login"
 
 # Redis
 # Number of seconds that specifies for how long list with channels names per
