@@ -374,3 +374,17 @@ Chat
 #chat-message-submit img {
   filter: invert(19%) sepia(96%) saturate(7373%) hue-rotate(247deg) brightness(96%) contrast(110%);
 }
+
+
+/* 
+==========
+Authentication
+==========
+*/
+.authentication > *{
+  margin: 16px 0;
+}
+.authentication-form > *{
+  margin: 8px 0;
+
+}

@@ -1,11 +1,17 @@
+{% extends "common/base.html" %}
+{% load i18n %}
 {% block title %}
-    Register
+    {% trans "Register" %}
 {% endblock title %}
 {% block content %}
-    <h2>Register</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Sing Up</button>
-    </form>
+    <section class="authentication">
+        <h2>{% trans "Register" %}</h2>
+        <form method="post" class="authentication-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">{% trans "Sing Up" %}</button>
+        </form>
+        <h5>{% trans "OR" %}</h5>
+        <a href="{% url "users:login" %}">{% trans "Sign in with an existing account" %}</a>
+    </section>
 {% endblock content %}
