@@ -1,3 +1,4 @@
+from django.test import Client
 import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
@@ -26,3 +27,12 @@ def clear_redis_data():
 
     redis_connection = get_redis_connection()
     redis_connection.flushdb()
+
+
+@pytest.fixture
+def user_client(client: Client, user: User) -> Client:
+    """
+    Returns client with authenticated user.
+    """
+    client.force_login(user)
+    return client

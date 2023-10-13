@@ -29,15 +29,6 @@ def chat_app_url_prefix() -> str:
 
 
 @pytest.fixture
-def user_client(client: Client, user: User) -> Client:
-    """
-    Returns client with authenticated user.
-    """
-    client.force_login(user)
-    return client
-
-
-@pytest.fixture
 async def async_user():
     return await sync_to_async(User.objects.create)(
         username=f"test-user-{uuid4()}", password="test-password"
