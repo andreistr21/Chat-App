@@ -1,11 +1,14 @@
 {% extends 'chat/index.html' %}
 {% load static %}
+{% load i18n %}
 {% block chat_section_block %}
     <div id="chat-log" class="chat-log"></div>
     <div class="message-input">
-        <input id="chat-message-input" type="text" placeholder="Write a message...">
+        <input id="chat-message-input"
+               type="text"
+               placeholder="{% trans "Write a message..." %}" />
         <button id="chat-message-submit" type="submit">
-            <img src="{% static "send.svg" %}" alt="alt" width=34>
+            <img src="{% static "send.svg" %}" alt="alt" height=34 width=34 />
         </button>
     </div>
 {% endblock chat_section_block %}
@@ -15,11 +18,11 @@
         var roomId = "{{ room_id }}";
 
         const chatSocket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/chat/'
-            + roomId
-            + '/'
+            'ws://' +
+            window.location.host +
+            '/ws/chat/' +
+            roomId +
+            '/'
         );
         chatSocket.onopen = function(e) {
             fetchMessages();
@@ -28,13 +31,13 @@
         function fetchMessages() {
             chatSocket.send(JSON.stringify({
                 'command': 'fetch_messages',
-                'room_id': roomId 
+                'room_id': roomId
             }));
         }
 
         function newMessage(author, content, dateStr) {
             let newMessageDiv = document.createElement('div');
-            
+
             // Classes
             newMessageDiv.className = 'message-card';
             if (author == username) {
@@ -67,21 +70,21 @@
             const month = _toString(date.getMonth() + 1);
             const year = _toString(date.getFullYear());
 
-            return hourse+ ':' + minutes + ", " + day + '-' + month + '-' + year
+            return hourse + ':' + minutes + ", " + day + '-' + month + '-' + year
         }
 
         chatSocket.onmessage = function(e) {
             var data = JSON.parse(e.data);
             if (data['command'] === 'messages') {
-                for (let i=0; i<data['messages'].length; i++) {
+                for (let i = 0; i < data['messages'].length; i++) {
                     dateStr = constructDate(data['messages'][i]['timestamp']);
                     newMessage(data['messages'][i]['author'], data['messages'][i].content, dateStr)
                     const p = "f";
                 }
-            } else if (data['command'] === 'new_message'){
+            } else if (data['command'] === 'new_message') {
                 dateStr = constructDate(data['message']['timestamp']);
                 newMessage(data['message']['author'], data['message'].content, dateStr)
-            } else if (data['command'] === 'chats_list_message'){
+            } else if (data['command'] === 'chats_list_message') {
                 var chat = document.querySelector('#' + data['room_id']);
                 chat.parentNode.removeChild(chat);
                 chat.querySelector("p").textContent = data["message"]["content"]
@@ -100,7 +103,7 @@
 
         document.querySelector('#chat-message-input').focus();
         document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
+            if (e.keyCode === 13) { // enter, return
                 document.querySelector('#chat-message-submit').click();
             }
         };

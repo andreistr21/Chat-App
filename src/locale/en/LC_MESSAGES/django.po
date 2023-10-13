@@ -3,12 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#: .\users\templates\users\login.html:8
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 13:28+0200\n"
+"POT-Creation-Date: 2023-10-13 10:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,9 +19,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\chat\templates\chat\index.html:17
+#: .\chat\templates\chat\index.html:22
 msgid "Select a chat to start messaging"
 msgstr "Select a chat to start messaging"
+
+#: .\chat\templates\chat\room.html:8
+msgid "Write a message..."
+msgstr ""
 
 #: .\templates\common\base.html:23
 msgid "Language"
@@ -28,4 +33,34 @@ msgstr ""
 
 #: .\templates\common\base.html:37
 msgid "Log out"
+msgstr ""
+
+#: .\users\templates\users\login.html:4
+msgid "Login"
+msgstr ""
+
+#: .\users\templates\users\login.html:12
+msgid "Log In"
+msgstr ""
+
+#: .\users\templates\users\login.html:14
+#: .\users\templates\users\register.html:14
+msgid "OR"
+msgstr ""
+
+#: .\users\templates\users\login.html:15
+msgid "Registern a new account"
+msgstr ""
+
+#: .\users\templates\users\register.html:4
+#: .\users\templates\users\register.html:8
+msgid "Register"
+msgstr ""
+
+#: .\users\templates\users\register.html:12
+msgid "Sing Up"
+msgstr ""
+
+#: .\users\templates\users\register.html:15
+msgid "Sign in with an existing account"
 msgstr ""

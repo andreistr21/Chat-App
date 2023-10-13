@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 13:28+0200\n"
-"PO-Revision-Date: 2023-08-30 13:40+0200\n"
+"POT-Creation-Date: 2023-10-13 10:16+0200\n"
+"PO-Revision-Date: 2023-10-13 10:17+0200\n"
 "Last-Translator:   <>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -19,9 +19,13 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 "X-Translated-Using: django-rosetta 0.9.9\n"
 
-#: .\chat\templates\chat\index.html:17
+#: .\chat\templates\chat\index.html:22
 msgid "Select a chat to start messaging"
 msgstr "Wybierz czat, aby rozpocząć wysyłanie wiadomości"
+
+#: .\chat\templates\chat\room.html:8
+msgid "Write a message..."
+msgstr "Napisz wiadomość..."
 
 #: .\templates\common\base.html:23
 msgid "Language"
@@ -30,3 +34,33 @@ msgstr "Język"
 #: .\templates\common\base.html:37
 msgid "Log out"
 msgstr "Wyloguj się"
+
+#: .\users\templates\users\login.html:4
+msgid "Login"
+msgstr "Login"
+
+#: .\users\templates\users\login.html:12
+msgid "Log In"
+msgstr "Wyloguj się"
+
+#: .\users\templates\users\login.html:14
+#: .\users\templates\users\register.html:14
+msgid "OR"
+msgstr "Lub"
+
+#: .\users\templates\users\login.html:15
+msgid "Registern a new account"
+msgstr "Zarejestruj nowe konto"
+
+#: .\users\templates\users\register.html:4
+#: .\users\templates\users\register.html:8
+msgid "Register"
+msgstr "Zarejestruj się"
+
+#: .\users\templates\users\register.html:12
+msgid "Sing Up"
+msgstr "Zarejestruj się"
+
+#: .\users\templates\users\register.html:15
+msgid "Sign in with an existing account"
+msgstr "Zaloguj się przy użyciu istniejącego konta"
