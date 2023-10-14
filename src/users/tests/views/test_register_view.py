@@ -4,13 +4,13 @@ from django.test import Client
 from django.urls import reverse, reverse_lazy
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
-URL = reverse_lazy("users:login")
+URL = reverse_lazy("users:register")
 
 
 def test_template_used(client: Client):
     response = client.get(URL)
 
-    assertTemplateUsed(response, "users/login.html")  # type: ignore
+    assertTemplateUsed(response, "users/register.html")  # type: ignore
 
 
 def test_allowed_access(client: Client):
@@ -39,8 +39,7 @@ def test_post_method(client: Client):
     """
     username = "test-username"
     password = "test-password"
-    data = {"username": username, "password": password}
-    User.objects.create_user(**data)
+    data = {"username": username, "password1": password, "password2": password}
 
     # Retrieves csrf token and adds it to data
     response_get = client.get(URL)
@@ -48,6 +47,6 @@ def test_post_method(client: Client):
     data["csrfmiddlewaretoken"] = str(csrf_token)
 
     response = client.post(URL, data, follow=True)
-    assert response.context["user"].is_authenticated
+    assert User.objects.filter(username=username).exists()
     # Asserts that user will be redirected
-    assert response.redirect_chain == [(reverse("chat:index"), 302)]
+    assert response.redirect_chain == [(reverse("users:login"), 302)]

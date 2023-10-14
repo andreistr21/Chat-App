@@ -6,4 +6,4 @@ from django.views.generic.edit import CreateView
 class RegistrationView(CreateView):
     form_class = UserCreationForm
     template_name = "users/register.html"
-    success_url = reverse_lazy("chat:index")
+    success_url = reverse_lazy("users:login")
