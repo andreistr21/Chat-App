@@ -31,7 +31,8 @@
         function fetchMessages() {
             chatSocket.send(JSON.stringify({
                 'command': 'fetch_messages',
-                'room_id': roomId
+                'room_id': roomId,
+                'username': username
             }));
         }
 

@@ -4,7 +4,7 @@ import pytest
 from django.contrib.auth.models import User
 
 from chat.models import ChatRoom, Message
-from chat.selectors import last_20_messages
+from chat.selectors import get_last_20_messages
 
 
 def _create_room(user_obj: User) -> ChatRoom:
@@ -46,7 +46,7 @@ def test_num_returned_items(num_messages, expected_num_messages, user) -> None:
     Tests if number of returned items muches expected number.
     """
     room_obj = _get_chat_room(user, num_messages)
-    messages = last_20_messages(str(room_obj.id))
+    messages = get_last_20_messages(str(room_obj.id))
 
     assert len(messages) == expected_num_messages
 
@@ -58,8 +58,10 @@ def test_num_returned_items(num_messages, expected_num_messages, user) -> None:
 @pytest.mark.django_db
 def test_order_returned_items(num_messages, user) -> None:
     room_obj = _get_chat_room(user, num_messages)
-    messages = last_20_messages(str(room_obj.id))
+    messages = get_last_20_messages(str(room_obj.id))
 
-    expected_messages = list(room_obj.message.order_by("-timestamp")[:20][::-1])
+    expected_messages = list(
+        room_obj.message.order_by("-timestamp")[:20][::-1]
+    )
 
     assert messages == expected_messages

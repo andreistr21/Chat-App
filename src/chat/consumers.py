@@ -13,7 +13,7 @@ from chat.selectors import (
     get_user,
     get_users_channels,
     is_chat_member,
-    last_20_messages,
+    get_last_20_messages,
 )
 from chat.serializers import message_to_json, messages_to_json
 from chat.services import (
@@ -31,7 +31,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         Fetches last 20 messages form database and sends to the user
         """
 
-        messages = await sync_to_async(last_20_messages)(data["room_id"])
+        messages = await sync_to_async(get_last_20_messages)(data["room_id"], data["username"])
         content = {
             "command": "messages",
             "messages": await sync_to_async(messages_to_json)(messages),

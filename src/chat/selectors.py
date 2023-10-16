@@ -4,22 +4,31 @@ from uuid import UUID
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
+from django.db.transaction import atomic
 
 from chat.models import ChatRoom, Message
 from chat.redis import get_redis_connection
 from chat.utils import construct_name_of_redis_list_for_channel_name
 
 
-def last_20_messages(room_id_str: str) -> List[Message]:
+# TODO: Update tests
+def get_last_20_messages(room_id_str: str, username: str) -> List[Message]:
     """
-    Returns last 20 messages in room.
+    Returns last 20 messages in room and removes them from unread table.
     """
     room_id_UUID = UUID(room_id_str)
-    return list(
-        Message.objects.filter(room=room_id_UUID).order_by("-timestamp")[:20][
-            ::-1
-        ]
-    )
+    with atomic():
+        messages = list(
+            Message.objects.filter(room=room_id_UUID).order_by("-timestamp")[
+                :20
+            ][::-1]
+        )
+
+        user = get_user(username)
+        for message in messages:
+            message.unread_by.remove(user)
+
+    return messages
 
 
 def get_user(username: str) -> User | None:
