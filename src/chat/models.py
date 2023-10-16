@@ -48,4 +48,4 @@ class Message(models.Model):
         verbose_name_plural = "Messages"
 
     def __str__(self) -> str:
-        return self.author.username
+        return f"{self.author.username}: {self.content[:100]}"

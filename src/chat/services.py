@@ -1,5 +1,6 @@
 from typing import List, Tuple
 from uuid import UUID
+from django.db.transaction import atomic
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -67,12 +68,19 @@ def remove_channel_name(user_id: str, channel_name: str) -> None:
     )
 
 
+# TODO: Update tests
 def create_message(
     author_obj: User, room_obj: ChatRoom, msg_content: str
 ) -> Message:
     """
-    Creates and returns message.
+    Creates message, adds all members, with author as exception, to unread_by 
+    table, and returns message.
     """
-    return Message.objects.create(
-        author=author_obj, content=msg_content, room=room_obj
-    )
+    with atomic():
+        message = Message.objects.create(
+            author=author_obj, content=msg_content, room=room_obj
+        )
+        unread_by_users = room_obj.members.exclude(id=author_obj.id)
+        message.unread_by.add(*unread_by_users)
+
+    return message
