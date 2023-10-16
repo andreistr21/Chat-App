@@ -85,7 +85,7 @@
                 dateStr = constructDate(data['message']['timestamp']);
                 newMessage(data['message']['author'], data['message'].content, dateStr)
             } else if (data['command'] === 'chats_list_message') {
-                var chat = document.querySelector('#' + data['room_id']);
+                var chat = document.getElementById(data['room_id']);
                 chat.parentNode.removeChild(chat);
                 chat.querySelector("p").textContent = data["message"]["content"]
                 if (!chat.classList.contains("unread") && !(chat.id == roomId)) {

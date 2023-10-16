@@ -1,11 +1,9 @@
-from datetime import datetime
 from typing import List, Tuple
 from uuid import UUID
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
-from django.utils.timezone import make_aware
 
 from chat.models import ChatRoom, Message
 from chat.redis import get_redis_connection
@@ -18,7 +16,7 @@ def chats_list(
 ) -> List[Tuple[UUID, str, Message | None]]:
     """
     Retrieves chat rooms id, name, last message object, mappers it together,
-    sorts by last message and returns.
+    sorts by last message or chat creation and returns.
     """
     chats_and_msgs = []
     for chat_room in chat_rooms:
@@ -28,13 +26,12 @@ def chats_list(
 
         chats_and_msgs.append((room_id, room_name, room_last_msg))
 
-    # TODO: Substitute 2000-01-01 with chat date creation
     return sorted(
         chats_and_msgs,
         key=lambda el: (
             el[2].timestamp
             if el[2] is not None
-            else make_aware(datetime(2000, 1, 1, 0, 0, 0))
+            else chat_rooms[chats_and_msgs.index(el)].created
         ),
         reverse=True,
     )
