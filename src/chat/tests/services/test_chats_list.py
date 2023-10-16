@@ -64,7 +64,13 @@ def test_return_values_4_rooms(
     message_1_none: bool,
 ):
     dates = (
+        # For room creation
         timezone.make_aware(datetime(2023, 10, 4, 1, 1, 1)),
+        timezone.make_aware(datetime(2000, 1, 1, 1, 1, 1)),  # Not important
+        timezone.make_aware(datetime(2000, 1, 1, 1, 1, 1)),  # Not important
+        timezone.make_aware(datetime(2000, 1, 1, 1, 1, 1)),  # Not important
+        # For messages creation
+        timezone.make_aware(datetime(2023, 10, 2, 1, 1, 1)),
         timezone.make_aware(datetime(2023, 10, 3, 1, 1, 1)),
         timezone.make_aware(datetime(2023, 10, 5, 1, 1, 1)),
         timezone.make_aware(datetime(2023, 10, 6, 1, 1, 1)),
@@ -94,14 +100,14 @@ def test_return_values_4_rooms(
         expected_chats_info = [
             (room4.id, room4.room_name or get_3_members, message4),
             (room3.id, room3.room_name or get_3_members, message3),
-            (room2.id, room2.room_name or get_3_members, message2),
             (room1.id, room1.room_name or get_3_members, message1),
+            (room2.id, room2.room_name or get_3_members, message2),
         ]
     else:
         expected_chats_info = [
             (room4.id, room4.room_name or get_3_members, message4),
             (room3.id, room3.room_name or get_3_members, message3),
-            (room1.id, room1.room_name or get_3_members, message1),
             (room2.id, room2.room_name or get_3_members, message2),
+            (room1.id, room1.room_name or get_3_members, message1),
         ]
     assert chats_info == expected_chats_info
