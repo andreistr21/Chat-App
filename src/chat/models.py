@@ -16,6 +16,7 @@ class ChatRoom(models.Model):
     )
 
     room_name = models.CharField(max_length=255, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = "Chat room"
