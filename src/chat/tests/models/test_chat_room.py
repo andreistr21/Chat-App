@@ -1,16 +1,23 @@
+from datetime import datetime
+from django.utils import timezone
+
 import pytest
 from django.contrib.auth.models import User
+from pytest_mock import MockerFixture
 
 from chat.models import ChatRoom
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("chat_name", ("", "room1", "room 2", "Test-Room-3"))
-def test_create_chat_room(user: User, chat_name: str):
+def test_create_chat_room(mocker: MockerFixture, user: User, chat_name: str):
+    date = timezone.make_aware(datetime(2023, 10, 16, 1, 1, 1))
+    mocker.patch.object(timezone, "now", return_value=date)
     chat_room = ChatRoom.objects.create(admin=user, room_name=chat_name)
 
     assert chat_room.admin == user
     assert chat_room.room_name == chat_name
+    assert chat_room.created == date
 
 
 @pytest.mark.django_db
