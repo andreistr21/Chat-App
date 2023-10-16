@@ -26,6 +26,7 @@ class ChatRoom(models.Model):
         return self.room_name or str(self.id)
 
 
+# TODO: Update tests
 class Message(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -34,6 +35,9 @@ class Message(models.Model):
     )
     room = models.ForeignKey(
         ChatRoom, related_name="message", on_delete=models.CASCADE
+    )
+    unread_by = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="unread_messages"
     )
 
     content = models.TextField()
