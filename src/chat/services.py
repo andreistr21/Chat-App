@@ -69,7 +69,6 @@ def remove_channel_name(user_id: str, channel_name: str) -> None:
     )
 
 
-# TODO: Update tests
 def create_message(
     author_obj: User, room_obj: ChatRoom, msg_content: str
 ) -> Message:
@@ -95,7 +94,7 @@ def read_by(message: dict, user: User) -> None:
     # If this user is author, it is already marked as read by him.
     if message["author"] == user.username:
         return None
-    
+
     date = parse_datetime(message["timestamp"])
     if not date:
         return None
@@ -103,6 +102,6 @@ def read_by(message: dict, user: User) -> None:
         timestamp=date,
         content=message["content"],
     ).first()
-    
+
     if message_obj:
         message_obj.unread_by.remove(user)
