@@ -9,15 +9,16 @@ from django.core.exceptions import ObjectDoesNotExist
 from chat.models import ChatRoom
 from chat.selectors import (
     get_chat_members,
+    get_last_20_messages,
     get_room,
     get_user,
     get_users_channels,
     is_chat_member,
-    get_last_20_messages,
 )
 from chat.serializers import message_to_json, messages_to_json
 from chat.services import (
     create_message,
+    read_by,
     remove_channel_name,
     save_channel_name,
 )
@@ -156,5 +157,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         Receives message from a room group.
         """
         message = event["message"]
+        
+        await sync_to_async(read_by)(message["message"], self.scope["user"])
 
         await self.send_message(message)
