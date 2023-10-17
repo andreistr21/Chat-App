@@ -12,7 +12,9 @@ from chat.utils import construct_name_of_redis_list_for_channel_name
 
 
 # TODO: Update tests
-def get_last_20_messages(room_id_str: str, username: str) -> List[Message]:
+def get_last_20_messages(
+    room_id_str: str, username: str
+) -> List[Message] | None:
     """
     Returns last 20 messages in room and removes them from unread table.
     """
@@ -25,10 +27,11 @@ def get_last_20_messages(room_id_str: str, username: str) -> List[Message]:
         )
 
         user = get_user(username)
-        for message in messages:
-            message.unread_by.remove(user)
+        if user is not None:
+            for message in messages:
+                message.unread_by.remove(user)
 
-    return messages
+    return None if user is None else messages
 
 
 def get_user(username: str) -> User | None:

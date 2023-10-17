@@ -26,12 +26,19 @@ from chat.services import (
 class ChatConsumer(AsyncWebsocketConsumer):
     reload_page_data = {"command": "reload_page"}
 
+    async def send_reload_page(self):
+        return await self.send_message(self.reload_page_data)
+
     async def fetch_messages(self, data) -> None:
         """
         Fetches last 20 messages form database and sends to the user
         """
 
-        messages = await sync_to_async(get_last_20_messages)(data["room_id"], data["username"])
+        messages = await sync_to_async(get_last_20_messages)(
+            data["room_id"], data["username"]
+        )
+        if messages is None:
+            return self.send_reload_page()
         content = {
             "command": "messages",
             "messages": await sync_to_async(messages_to_json)(messages),
@@ -49,7 +56,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         room_obj = await sync_to_async(get_room)(data["room_id"])
         # TODO: Add handler to frontend. (Something need to be done in case room or author doesn't exists anymore)
         if room_obj is None or author_obj is None:
-            return await self.send_message(self.reload_page_data)
+            return self.send_reload_page()
         message = await sync_to_async(create_message)(
             author_obj, room_obj, data["message"]
         )
