@@ -26,7 +26,6 @@ class ChatRoom(models.Model):
         return self.room_name or str(self.id)
 
 
-# TODO: Update tests
 class Message(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,

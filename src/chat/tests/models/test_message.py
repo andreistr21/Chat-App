@@ -24,11 +24,13 @@ def test_message_creation(
     )
 
     message = Message.objects.create(author=user, room=room, content=content)
+    message.unread_by.add(user)
 
     assert message.author == user
     assert message.room == room
     assert message.content == content
     assert message.timestamp == timezone.now()
+    assert list(message.unread_by.all()) == [user]
 
 
 @pytest.mark.django_db
@@ -51,4 +53,4 @@ def test_message_str(user: User, room: ChatRoom):
 
     message_str = str(message)
 
-    assert message_str == message.author.username
+    assert message_str == "test-user: Test message"
