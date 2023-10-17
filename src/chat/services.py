@@ -5,7 +5,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
 from django.db.transaction import atomic
-from datetime import datetime
 from django.utils.dateparse import parse_datetime
 
 from chat.models import ChatRoom, Message
