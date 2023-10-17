@@ -86,7 +86,6 @@ def create_message(
     return message
 
 
-# TODO: Add tests
 def read_by(message: dict, user: User) -> None:
     """
     Marks message as read by user.
