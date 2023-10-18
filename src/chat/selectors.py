@@ -100,3 +100,14 @@ def is_chat_member(user_id: int, room_id: str) -> bool:
     if room := get_room(room_id):
         return room.members.filter(id=user_id).exists()
     return False
+
+
+# TODO: Add tests
+def count_unread_msgs(room: ChatRoom, user: User) -> int:
+    messages_ids = room.message.values_list("id", flat=True)
+
+    return Message.objects.filter(
+        id__in=messages_ids,
+        room=room,
+        unread_by=user,
+    ).count()

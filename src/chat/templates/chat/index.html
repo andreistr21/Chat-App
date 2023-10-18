@@ -3,16 +3,17 @@
 {% block content %}
     <section class="messenger-section">
         <section class="chats-list-section">
-            {% for list_room_id, chat_name, chat_last_msg in chats_info %}
+            {% for list_room_id, chat_name, chat_last_msg, num_unread_messages in chats_info %}
                 <a href="{% url 'chat:room' list_room_id %}"
                    id="{{ list_room_id }}"
-                   class="chat-card {% if list_room_id == room_id %}selected-chat-card{% endif %}">
+                   class="chat-card
+                          {% if list_room_id == room_id %}selected-chat-card{% endif %}
+                          {% if num_unread_messages > 0 %}unread{% endif %}">
                     <h5>{{ chat_name }}</h5>
                     <p class="text-small">
-                        {% if chat_last_msg.content %}
-                            {{ chat_last_msg.content }}
-                        {% endif %}
+                        {% if chat_last_msg.content %}{{ chat_last_msg.content }}{% endif %}
                     </p>
+                    {% if num_unread_messages > 0 %}<p>{{ num_unread_messages }}</p>{% endif %}
                 </a>
             {% endfor %}
         </section>

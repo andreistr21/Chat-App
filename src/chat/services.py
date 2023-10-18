@@ -9,24 +9,36 @@ from django.utils.dateparse import parse_datetime
 
 from chat.models import ChatRoom, Message
 from chat.redis import get_redis_connection
-from chat.selectors import get_3_members, get_last_message
+from chat.selectors import count_unread_msgs, get_3_members, get_last_message
 from chat.utils import construct_name_of_redis_list_for_channel_name
 
 
+# TODO: Update tests
 def chats_list(
-    chat_rooms: QuerySet[ChatRoom],
-) -> List[Tuple[UUID, str, Message | None]]:
+    chat_rooms: QuerySet[ChatRoom], user: User, current_room_id: str = ""
+) -> List[Tuple[UUID, str, Message | None, int]]:
     """
-    Retrieves chat rooms id, name, last message object, mappers it together,
-    sorts by last message or chat creation and returns.
+    Retrieves chat rooms id, name, last message object, amount of unread
+    messages, mappers it together, sorts by last message or chat creation and
+    returns.
     """
     chats_and_msgs = []
     for chat_room in chat_rooms:
         room_id = chat_room.id
         room_name = chat_room.room_name or get_3_members(chat_room)
         room_last_msg = get_last_message(chat_room)
+        # Since messages are being retrieved after page is loaded, unread
+        # counter won't update. That's why you need to check if this is the
+        # current page.
+        num_unread_messages = (
+            count_unread_msgs(chat_room, user)
+            if current_room_id != room_id
+            else 0
+        )
 
-        chats_and_msgs.append((room_id, room_name, room_last_msg))
+        chats_and_msgs.append(
+            (room_id, room_name, room_last_msg, num_unread_messages)
+        )
 
     return sorted(
         chats_and_msgs,
