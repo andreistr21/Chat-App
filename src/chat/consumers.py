@@ -132,7 +132,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         channels_names = await sync_to_async(get_users_channels)(chat_members)
 
         content = {
-            "type": "chat_message",
+            "type": "chat_list_message",
             "message": {
                 "command": "chats_list_message",
                 "room_id": str(room_obj.id),
@@ -161,3 +161,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await sync_to_async(read_by)(message["message"], self.scope["user"])
 
         await self.send_message(message)
+        
+    async def chat_list_message(self, message: dict) -> None:
+        message = message["message"]
+        
+        await self.send_message(message) 
