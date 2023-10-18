@@ -27,13 +27,8 @@ def chats_list(
         room_id = chat_room.id
         room_name = chat_room.room_name or get_3_members(chat_room)
         room_last_msg = get_last_message(chat_room)
-        # Since messages are being retrieved after page is loaded, unread
-        # counter won't update. That's why you need to check if this is the
-        # current page.
-        num_unread_messages = (
-            count_unread_msgs(chat_room, user)
-            if current_room_id != room_id
-            else 0
+        num_unread_messages = count_unread_msgs(
+            chat_room, user, current_room_id
         )
 
         chats_and_msgs.append(

@@ -103,7 +103,17 @@ def is_chat_member(user_id: int, room_id: str) -> bool:
 
 
 # TODO: Add tests
-def count_unread_msgs(room: ChatRoom, user: User) -> int:
+def count_unread_msgs(room: ChatRoom, user: User, current_room_id: str) -> int:
+    """
+    Returns counter of unread messages. Returns 0 if room object is the same as
+    current page.
+    """
+    # Since messages are being retrieved after page is loaded, unread counter
+    # isn't updated yet. That's why you need to check if this is the current
+    # page room.
+    if room.id == current_room_id:
+        return 0
+
     messages_ids = room.message.values_list("id", flat=True)
 
     return Message.objects.filter(
