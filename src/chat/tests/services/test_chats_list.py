@@ -21,11 +21,11 @@ def _create_message(author: User, room: ChatRoom) -> Message:
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    ("room_name", "get_3_members", "last_msg"),
+    ("room_name", "get_3_members", "last_msg", "is_current_room_id"),
     (
-        ("room name", None, True),
-        (None, "member1, member2, member3", True),
-        (None, "member1, member2, member3", False),
+        ("room name", None, True, False),
+        (None, "member1, member2, member3", True, False),
+        (None, "member1, member2, member3", False, True),
     ),
 )
 def test_return_values_single_room(
@@ -34,16 +34,31 @@ def test_return_values_single_room(
     room_name: str | None,
     get_3_members: str | None,
     last_msg: bool,
+    is_current_room_id: bool,
 ):
     room = _create_room(user, room_name)
     message = _create_message(user, room) if last_msg else None
     mocker.patch("chat.services.get_last_message", return_value=message)
     mocker.patch("chat.services.get_3_members", return_value=get_3_members)
+    expected_unread_msgs = 1 if is_current_room_id else 0
+    mocker.patch(
+        "chat.services.count_unread_msgs",
+        return_value=expected_unread_msgs,
+    )
     chat_rooms = user.admin.all()
 
-    chats_info = chats_list(chat_rooms)
+    chats_info = chats_list(
+        chat_rooms, user, str(room.id) if is_current_room_id else ""
+    )
 
-    expected_chats_info = [(room.id, room.room_name or get_3_members, message)]
+    expected_chats_info = [
+        (
+            room.id,
+            room.room_name or get_3_members,
+            message,
+            expected_unread_msgs,
+        )
+    ]
     assert chats_info == expected_chats_info
 
 
@@ -52,7 +67,6 @@ def test_return_values_single_room(
     ("room_name", "get_3_members", "message_1_none"),
     (
         ("room name", None, False),
-        (None, "member1, member2, member3", False),
         (None, "member1, member2, member3", True),
     ),
 )
@@ -81,7 +95,8 @@ def test_return_values_4_rooms(
     room3 = _create_room(user, room_name)
     room4 = _create_room(user, room_name)
     message1 = None if message_1_none else _create_message(user, room1)
-    # So messages will have their timestamp write
+    # If message1 is not created, we need manually get value from timezone.now,
+    # so order will remain the same.
     # sourcery skip: no-conditionals-in-tests
     if message_1_none:
         timezone.now()
@@ -91,23 +106,27 @@ def test_return_values_4_rooms(
     messages = (message1, message2, message3, message4)
     mocker.patch("chat.services.get_last_message", side_effect=messages)
     mocker.patch("chat.services.get_3_members", return_value=get_3_members)
+    mocker.patch(
+        "chat.services.count_unread_msgs",
+        side_effect=[3, 4, 1, 2],
+    )
     chat_rooms = user.admin.all()
 
-    chats_info = chats_list(chat_rooms)
+    chats_info = chats_list(chat_rooms, user)
 
     # sourcery skip: no-conditionals-in-tests
     if message_1_none:
         expected_chats_info = [
-            (room4.id, room4.room_name or get_3_members, message4),
-            (room3.id, room3.room_name or get_3_members, message3),
-            (room1.id, room1.room_name or get_3_members, message1),
-            (room2.id, room2.room_name or get_3_members, message2),
+            (room4.id, room4.room_name or get_3_members, message4, 2),
+            (room3.id, room3.room_name or get_3_members, message3, 1),
+            (room1.id, room1.room_name or get_3_members, message1, 3),
+            (room2.id, room2.room_name or get_3_members, message2, 4),
         ]
     else:
         expected_chats_info = [
-            (room4.id, room4.room_name or get_3_members, message4),
-            (room3.id, room3.room_name or get_3_members, message3),
-            (room2.id, room2.room_name or get_3_members, message2),
-            (room1.id, room1.room_name or get_3_members, message1),
+            (room4.id, room4.room_name or get_3_members, message4, 2),
+            (room3.id, room3.room_name or get_3_members, message3, 1),
+            (room2.id, room2.room_name or get_3_members, message2, 4),
+            (room1.id, room1.room_name or get_3_members, message1, 3),
         ]
     assert chats_info == expected_chats_info

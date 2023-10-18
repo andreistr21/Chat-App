@@ -13,7 +13,6 @@ from chat.selectors import count_unread_msgs, get_3_members, get_last_message
 from chat.utils import construct_name_of_redis_list_for_channel_name
 
 
-# TODO: Update tests
 def chats_list(
     chat_rooms: QuerySet[ChatRoom], user: User, current_room_id: str = ""
 ) -> List[Tuple[UUID, str, Message | None, int]]:
