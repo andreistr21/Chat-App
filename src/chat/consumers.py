@@ -39,7 +39,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             data["room_id"], data["username"]
         )
         if messages is None:
-            return self.send_reload_page()
+            return await self.send_reload_page()
         content = {
             "command": "messages",
             "messages": await sync_to_async(messages_to_json)(messages),

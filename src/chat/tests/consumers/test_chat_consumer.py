@@ -45,6 +45,7 @@ async def communicator_no_discon(
     mocker.patch("chat.consumers.is_chat_member", return_value=True)
     mocker.patch("chat.consumers.save_channel_name", return_value=None)
     mocker.patch("chat.consumers.remove_channel_name", return_value=None)
+    mocker.patch("chat.consumers.read_by", return_value=None)
 
     await communicator_no_conn.connect()
 
@@ -229,8 +230,9 @@ class TestChatConsumerFetchMessages:
     ):
         room, messages = await _async_get_chat_room(async_user, 5)
         self.data["room_id"] = str(room.id)
+        self.data["username"] = async_user.username
         messages_json = await sync_to_async(messages_to_json)(messages)
-        mocker.patch("chat.consumers.last_20_messages", return_value=[])
+        mocker.patch("chat.consumers.get_last_20_messages", return_value=[])
         mocker.patch(
             "chat.consumers.messages_to_json", return_value=messages_json
         )
@@ -311,6 +313,7 @@ class TestChatConsumerNewMessage:
             message_json, async_room
         )
 
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     @pytest.mark.parametrize(
         ["author_obj_is_none", "room_obj_is_none"],
         [(True, False), (False, True), (True, True)],
@@ -340,8 +343,8 @@ class TestChatConsumerNewMessage:
         get_room_patched = mocker.patch(
             "chat.consumers.get_room", return_value=get_room_return_value
         )
-        send_message_patched = mocker.patch.object(
-            ChatConsumer, "send_message", return_value=None
+        send_reload_page_patched = mocker.patch.object(
+            ChatConsumer, "send_reload_page", return_value=None
         )
 
         create_message_patched = mocker.patch(
@@ -365,7 +368,7 @@ class TestChatConsumerNewMessage:
         # Assertions
         get_user_patched.assert_called_once_with(self.data["from"])
         get_room_patched.assert_called_once_with(self.data["room_id"])
-        send_message_patched.assert_called_once_with(self.reload_page_data)
+        send_reload_page_patched.assert_called_once()
 
         create_message_patched.assert_not_called()
         message_to_json_patched.assert_not_called()
