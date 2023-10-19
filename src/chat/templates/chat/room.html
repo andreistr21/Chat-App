@@ -88,9 +88,30 @@
             } else if (data['command'] === 'chats_list_message') {
                 var chat = document.getElementById(data['room_id']);
                 chat.parentNode.removeChild(chat);
+                
                 chat.querySelector("p").textContent = data["message"]["content"]
-                if (!chat.classList.contains("unread") && !(chat.id == roomId)) {
-                    chat.classList.add("unread");
+                
+                // If this is not current chat, updates unread properties
+                if (!(chat.id == roomId)) {
+                    // Marks card as unread
+                    if (!chat.classList.contains("unread")) {
+                        chat.classList.add("unread");
+                    }
+
+                    // Updates unread counter
+                    var unreadMsgCounter = chat.querySelector("div.msg-content-and-msgs-counter > p.chat-card-unread-msgs-counter");
+                    if (unreadMsgCounter) {
+                        var a = unreadMsgCounter.textContent;
+                        var currentCounterNumber = parseInt(unreadMsgCounter.textContent, 10);
+
+                        var newMsgCoutner = currentCounterNumber + 1;
+                        unreadMsgCounter.textContent = newMsgCoutner;
+                    } else {
+                        var newElement = document.createElement('p');
+                        newElement.className = 'chat-card-unread-msgs-counter';
+                        newElement.textContent = 1;
+                        chat.querySelector(".msg-content-and-msgs-counter").appendChild(newElement);
+                    }
                 }
                 document.querySelector('.chats-list-section').prepend(chat);
             }
