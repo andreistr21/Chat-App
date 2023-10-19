@@ -95,10 +95,7 @@ def test_msgs_mark_as_read(get_user_mock: Mock, user: User) -> None:
         room_obj.message.order_by("-timestamp")[:20][::-1]
     )
 
-    unread = []
-    for msg in expected_messages:
-        unread.append(msg.unread_by.all().exists())
-
+    unread = [msg.unread_by.all().exists() for msg in expected_messages]
     assert True not in unread
 
 
@@ -116,8 +113,5 @@ def test_none_returned(get_user_mock: Mock, user: User) -> None:
         room_obj.message.order_by("-timestamp")[:20][::-1]
     )
 
-    unread = []
-    for msg in expected_messages:
-        unread.append(msg.unread_by.all().exists())
-
+    unread = [msg.unread_by.all().exists() for msg in expected_messages]
     assert False not in unread
