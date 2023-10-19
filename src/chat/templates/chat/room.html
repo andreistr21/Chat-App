@@ -90,7 +90,7 @@
                 chat.parentNode.removeChild(chat);
                 
                 chat.querySelector("p").textContent = data["message"]["content"]
-                
+
                 // If this is not current chat, updates unread properties
                 if (!(chat.id == roomId)) {
                     // Marks card as unread
@@ -114,6 +114,9 @@
                     }
                 }
                 document.querySelector('.chats-list-section').prepend(chat);
+            }
+            else if (data['command'] == 'reload_page') {
+                location.reload();
             }
             const chatLog = document.querySelector("#chat-log");
             chatLog.scrollTo(0, chatLog.scrollHeight);
