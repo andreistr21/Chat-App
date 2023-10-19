@@ -16,6 +16,7 @@
     <script>
         var username = "{{ username }}";
         var roomId = "{{ room_id }}";
+        var msgsOffset = 0
 
         const chatSocket = new WebSocket(
             'ws://' +
@@ -32,11 +33,12 @@
             chatSocket.send(JSON.stringify({
                 'command': 'fetch_messages',
                 'room_id': roomId,
-                'username': username
+                'username': username,
+                'msgs_offset': msgsOffset
             }));
         }
 
-        function newMessage(author, content, dateStr) {
+        function cunstructMessage(author, content, dateStr) {
             let newMessageDiv = document.createElement('div');
 
             // Classes
@@ -52,7 +54,15 @@
             // Date
             newMessageDiv.innerHTML += '<p class="message-date text-small">' + dateStr + '</p>';
 
-            document.querySelector('#chat-log').appendChild(newMessageDiv);
+            return newMessageDiv;
+        }
+
+        function newMessage(author, content, dateStr) {
+            document.querySelector('#chat-log').appendChild(cunstructMessage(author, content, dateStr));
+        }
+
+        function oldMessage(author, content, dateStr) {
+            document.querySelector('#chat-log').prepend(cunstructMessage(author, content, dateStr));
         }
 
         function _toString(number) {
@@ -75,6 +85,7 @@
         }
 
         chatSocket.onmessage = function(e) {
+            var scrollToBottom = true;
             var data = JSON.parse(e.data);
             if (data['command'] === 'messages') {
                 for (let i = 0; i < data['messages'].length; i++) {
@@ -82,13 +93,16 @@
                     newMessage(data['messages'][i]['author'], data['messages'][i].content, dateStr)
                     const p = "f";
                 }
+                const messagesLenght = data['messages'].length;
+                msgsOffset = msgsOffset + messagesLenght;
             } else if (data['command'] === 'new_message') {
                 dateStr = constructDate(data['message']['timestamp']);
-                newMessage(data['message']['author'], data['message'].content, dateStr)
+                newMessage(data['message']['author'], data['message'].content, dateStr);
+                msgsOffset = msgsOffset + 1;
             } else if (data['command'] === 'chats_list_message') {
                 var chat = document.getElementById(data['room_id']);
                 chat.parentNode.removeChild(chat);
-                
+
                 chat.querySelector("p").textContent = data["message"]["content"]
 
                 // If this is not current chat, updates unread properties
@@ -114,12 +128,23 @@
                     }
                 }
                 document.querySelector('.chats-list-section').prepend(chat);
-            }
-            else if (data['command'] == 'reload_page') {
+            } else if (data['command'] == 'old_messages') {
+                for (let i = data['messages'].length - 1; i >= 0; i--) {
+                    dateStr = constructDate(data['messages'][i]['timestamp']);
+                    oldMessage(data['messages'][i]['author'], data['messages'][i].content, dateStr)
+                    const p = "f";
+                }
+                const messagesLenght = data['messages'].length;
+                msgsOffset = msgsOffset + messagesLenght;
+                scrollToBottom = false;
+            } else if (data['command'] == 'reload_page') {
                 location.reload();
             }
-            const chatLog = document.querySelector("#chat-log");
-            chatLog.scrollTo(0, chatLog.scrollHeight);
+
+            if (scrollToBottom) {
+                const chatLog = document.querySelector("#chat-log");
+                chatLog.scrollTo(0, chatLog.scrollHeight);
+            }
         };
 
         chatSocket.onclose = function(e) {
@@ -144,5 +169,31 @@
             }));
             messageInputDom.value = '';
         };
+
+        const chatContainer = document.querySelector("#chat-log");
+        let lastScrollTop = 0;
+        let isScrolling = false;
+
+        chatContainer.addEventListener('scroll', function() {
+            if (isScrolling) {
+                return; // If scrolling is already in progress, exit early
+            }
+
+            isScrolling = true;
+
+            setTimeout(function() {
+                const scrollTop = chatContainer.scrollTop;
+                const elementHeight = chatContainer.scrollHeight / chatContainer.childElementCount;
+                const fifthElementOffset = 4 * elementHeight;
+
+                if (scrollTop < lastScrollTop) {
+                    if (scrollTop <= fifthElementOffset) {
+                        fetchMessages();
+                    }
+                }
+                lastScrollTop = scrollTop;
+                isScrolling = false;
+            }, 100);
+        });
     </script>
 {% endblock script %}
