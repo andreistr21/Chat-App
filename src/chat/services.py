@@ -103,10 +103,8 @@ def read_by(message: dict, user: User) -> None:
     date = parse_datetime(message["timestamp"])
     if not date:
         return None
-    message_obj = Message.objects.filter(
+    if message_obj := Message.objects.filter(
         timestamp=date,
         content=message["content"],
-    ).first()
-
-    if message_obj:
+    ).first():
         message_obj.unread_by.remove(user)

@@ -30,6 +30,7 @@ def test_room_view(
             room.id,
             room.room_name or get_3_members(room),
             get_last_message(room),
+            0
         )
     ]
 

@@ -32,6 +32,7 @@ def test_index_url(
             room.id,
             room.room_name or get_3_members(room),
             get_last_message(room),
+            0
         )
     ]
 

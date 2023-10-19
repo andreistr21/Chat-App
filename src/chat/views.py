@@ -7,7 +7,6 @@ from chat.selectors import get_user_chats
 from chat.services import chats_list
 
 
-# TODO: Update tests
 @require_http_methods(["GET"])
 @login_required
 def index(request):
@@ -24,7 +23,6 @@ def index(request):
     )
 
 
-# TODO: Update tests
 @require_http_methods(["GET"])
 @login_required
 @chat_membership
