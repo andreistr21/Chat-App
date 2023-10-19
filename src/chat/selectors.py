@@ -11,7 +11,6 @@ from chat.redis import get_redis_connection
 from chat.utils import construct_name_of_redis_list_for_channel_name
 
 
-# TODO: Update tests
 def get_last_20_messages(
     room_id_str: str, username: str, offset: int
 ) -> List[Message] | None:
