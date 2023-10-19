@@ -275,6 +275,10 @@ Chats list
 .unread {
   background-color: var(--primary-500);
 }
+.msg-content-and-msgs-counter{
+  display: flex;
+  padding: 2px 0;
+}
 
 .chat-card {
   display: block;
@@ -288,11 +292,11 @@ Chats list
 .chat-card h5 {
   line-height: 1.1;
 }
-.chat-card p {
+.chat-card-msg-content {
   color: var(--grey-700);
 }
-.chat-card p,
-.chat-card h5 {
+.chat-card-msg-content,
+.chat-card-chat-name {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -300,6 +304,17 @@ Chats list
 
 .chat-card:hover {
   background-color: var(--primary-200);
+}
+
+.chat-card-msg-content{
+  width: 100%;
+  margin: auto 0;
+}
+.chat-card-unread-msgs-counter{
+  color: var(--grey-200);
+  background-color: var(--grey-600);
+  padding: 2px 6px;
+  border-radius: 50%;
 }
 
 /* 

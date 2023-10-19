@@ -1,4 +1,4 @@
-{% extends 'common/base.html' %}
+{% extends "common/base.html" %}
 {% load i18n %}
 {% block content %}
     <section class="messenger-section">
@@ -9,11 +9,13 @@
                    class="chat-card
                           {% if list_room_id == room_id %}selected-chat-card{% endif %}
                           {% if num_unread_messages > 0 %}unread{% endif %}">
-                    <h5>{{ chat_name }}</h5>
-                    <p class="text-small">
-                        {% if chat_last_msg.content %}{{ chat_last_msg.content }}{% endif %}
-                    </p>
-                    {% if num_unread_messages > 0 %}<p>{{ num_unread_messages }}</p>{% endif %}
+                    <h5 class="chat-card-chat-name">{{ chat_name }}</h5>
+                    <div class="msg-content-and-msgs-counter">
+                        <p class="text-small chat-card-msg-content">
+                            {% if chat_last_msg.content %}{{ chat_last_msg.content }}{% endif %}
+                        </p>
+                        {% if num_unread_messages > 0 %}<p class="chat-card-unread-msgs-counter">{{ num_unread_messages }}</p>{% endif %}
+                    </div>
                 </a>
             {% endfor %}
         </section>
