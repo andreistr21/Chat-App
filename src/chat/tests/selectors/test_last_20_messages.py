@@ -41,17 +41,17 @@ def _get_chat_room(user: User, num_messages: int, unread=False):
 @pytest.mark.parametrize(
     ["num_messages", "expected_num_messages", "offset"],
     [
-        (0, 0, 0),
-        (1, 1, 0),
-        (5, 5, 0),
+        (0, 0, "0"),
+        (1, 1, "0"),
+        (5, 5, "0"),
         (5, 3, 2),
-        (19, 19, 0),
-        (20, 20, 0),
-        (21, 20, 0),
-        (30, 20, 0),
-        (30, 20, 10),
-        (50, 20, 0),
-        (50, 10, 40),
+        (19, 19, "0"),
+        (20, 20, "0"),
+        (21, 20, "0"),
+        (30, 20, "0"),
+        (30, 20, "10"),
+        (50, 20, "0"),
+        (50, 10, "40"),
     ],
 )
 @pytest.mark.django_db
@@ -59,7 +59,7 @@ def test_num_returned_items(
     num_messages: int,
     expected_num_messages: int,
     user: User,
-    offset: int,
+    offset: str,
 ) -> None:
     """
     Tests if number of returned items muches expected number.
@@ -72,17 +72,17 @@ def test_num_returned_items(
 
 @pytest.mark.parametrize(
     ["num_messages", "offset"],
-    [(0, 0), (1, 0), (5, 0), (19, 0), (20, 0), (21, 0), (30, 5), (50, 35)],
+    [(0, "0"), (1, "0"), (5, "0"), (19, "0"), (20, "0"), (21, "0"), (30, "5"), (50, "35")],
 )
 @pytest.mark.django_db
 def test_order_returned_items(
-    num_messages: int, user: User, offset: int
+    num_messages: int, user: User, offset: str
 ) -> None:
     room_obj = _get_chat_room(user, num_messages)
     messages = get_last_20_messages(str(room_obj.id), user.username, offset)
 
     expected_messages = list(
-        room_obj.message.order_by("-timestamp")[offset : offset + 20][::-1]
+        room_obj.message.order_by("-timestamp")[int(offset) : int(offset) + 20][::-1]
     )
 
     assert messages == expected_messages
@@ -92,7 +92,7 @@ def test_order_returned_items(
 def test_msgs_mark_as_read(user: User) -> None:
     room_obj = _get_chat_room(user, 20, True)
 
-    _ = get_last_20_messages(str(room_obj.id), user.username, 0)
+    _ = get_last_20_messages(str(room_obj.id), user.username, "0")
 
     expected_messages: list[Message] = list(
         room_obj.message.order_by("-timestamp")[:20][::-1]
@@ -110,7 +110,7 @@ def test_none_returned(get_user_mock: Mock, user: User) -> None:
     get_user_mock.return_value = None
     room_obj = _get_chat_room(user, 20, True)
 
-    _ = get_last_20_messages(str(room_obj.id), user.username, 0)
+    _ = get_last_20_messages(str(room_obj.id), user.username, "0")
 
     expected_messages: list[Message] = list(
         room_obj.message.order_by("-timestamp")[:20][::-1]
