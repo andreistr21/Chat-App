@@ -2,6 +2,12 @@
 {% load static %}
 {% load i18n %}
 {% block chat_section_block %}
+    <div class="room-info-and-actions">
+        <p class="caht-room-name">{{ room_name }}</p>
+        <div class="chat-actions">
+            <a href="{% url "chat:add_members" room_id %}">Add members</a>
+        </div>
+    </div>
     <div id="chat-log" class="chat-log"></div>
     <div class="message-input">
         <input id="chat-message-input"

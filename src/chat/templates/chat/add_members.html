@@ -1,0 +1,12 @@
+{% extends "common/base.html" %}
+{% block content %}
+    <section class="form-section">
+        <section class="center-section">
+            <form method="post">
+                {% csrf_token %}
+                {{ chat_room_members_form.as_p }}
+                <input type="submit" value="Submit" />
+            </form>
+        </section>
+    </section>
+{% endblock content %}

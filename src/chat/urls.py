@@ -6,5 +6,8 @@ app_name = "chat"
 urlpatterns = [
     path("", views.index, name="index"),
     path("<uuid:room_id>/", views.room, name="room"),
+    # TODO: Add tests
     path("create/", views.create_room, name="create_room"),
+    # TODO: Add tests
+    path("add-members/<uuid:room_id>/", views.add_members, name="add_members"),
 ]

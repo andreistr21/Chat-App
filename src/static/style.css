@@ -275,7 +275,7 @@ Chats list
 .unread {
   background-color: var(--primary-500);
 }
-.msg-content-and-msgs-counter{
+.msg-content-and-msgs-counter {
   display: flex;
   padding: 2px 0;
 }
@@ -285,7 +285,7 @@ Chats list
   color: var(--textColor);
   padding: 8px 8px;
 }
-.selected-chat-card{
+.selected-chat-card {
   background-color: var(--primary-400);
   font-weight: 500;
 }
@@ -306,18 +306,18 @@ Chats list
   background-color: var(--primary-200);
 }
 
-.chat-card-msg-content{
+.chat-card-msg-content {
   width: 100%;
   margin: auto 0;
 }
-.chat-card-unread-msgs-counter{
+.chat-card-unread-msgs-counter {
   color: var(--grey-200);
   background-color: var(--grey-600);
   padding: 2px 6px;
   border-radius: 50%;
 }
 
-.create-room-float-button{
+.create-room-float-button {
   position: fixed;
   bottom: 25px;
   left: 25px;
@@ -330,6 +330,11 @@ Chats list
 Chat
 ==========
 */
+.room-info-and-actions > *,
+.chat-actions > * {
+  color: var(--white);
+}
+
 .chat-section {
   background-color: var(--primary-800);
   display: flex;
@@ -358,7 +363,7 @@ Chat
   margin-bottom: 6px;
   font-weight: 500;
 }
-.message-content{
+.message-content {
   padding-right: 116px;
 }
 .message-date {
@@ -383,7 +388,7 @@ Chat
   outline: none;
 }
 #chat-message-input::placeholder {
- color: var(--grey-400);
+  color: var(--grey-400);
 }
 #chat-message-submit {
   background-color: transparent;
@@ -395,30 +400,28 @@ Chat
   border-radius: 8px;
 }
 #chat-message-submit img {
-  filter: invert(19%) sepia(96%) saturate(7373%) hue-rotate(247deg) brightness(96%) contrast(110%);
+  filter: invert(19%) sepia(96%) saturate(7373%) hue-rotate(247deg)
+    brightness(96%) contrast(110%);
 }
-
 
 /* 
 ==========
 Authentication
 ==========
 */
-.authentication > *{
+.authentication > * {
   margin: 16px 0;
 }
-.authentication-form > *{
+.authentication-form > * {
   margin: 8px 0;
-
 }
-
 
 /* 
 ==========
 Form
 ==========
 */
-.form-section{
+.form-section {
   height: calc(100vh - 48px);
   background-color: var(--primary-300);
 }
