@@ -18,6 +18,7 @@
                     </div>
                 </a>
             {% endfor %}
+            <a class="create-room-float-button" href="{% url "chat:create_room" %}">Add room</a>
         </section>
         <section class="chat-section">
             {% block chat_section_block %}

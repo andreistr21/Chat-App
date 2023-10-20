@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 from chat.decorators import chat_membership
+from chat.forms import ChatRoomForm
 from chat.selectors import get_user_chats
 from chat.services import chats_list
 
@@ -39,4 +41,24 @@ def room(request, room_id: str):
             "chat_rooms": chat_rooms,
             "chats_info": chats_info,
         },
+    )
+
+
+@require_http_methods(["GET", "POST"])
+@login_required
+def create_room(request):
+    """
+    View for room creation.
+    """
+    if request.method == "GET":
+        chat_room_form = ChatRoomForm(request=request)
+    elif request.method == "POST":
+        chat_room_form = ChatRoomForm(request.POST, request=request)
+        if chat_room_form.is_valid():
+            new_room = chat_room_form.save()
+
+            return redirect(reverse("chat:room", args=(new_room.id,)))
+
+    return render(
+        request, "chat/create_room.html", {"chat_room_form": chat_room_form}
     )
