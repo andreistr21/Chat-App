@@ -5,7 +5,7 @@ from uuid import uuid4
 import pytest
 from asgiref.sync import sync_to_async
 from channels.layers import InMemoryChannelLayer, get_channel_layer
-from channels.testing import ApplicationCommunicator, WebsocketCommunicator
+from channels.testing import WebsocketCommunicator
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from pytest_mock import MockerFixture
@@ -222,15 +222,18 @@ class TestChatConsumerFetchMessages:
         "room_id": "room-id",
     }
 
+    @pytest.mark.parametrize("offset", (0, 5))
     async def test_send_message_called(
         self,
         mocker: MockerFixture,
         communicator: WebsocketCommunicator,
         async_user: User,
+        offset: int,
     ):
         room, messages = await _async_get_chat_room(async_user, 5)
         self.data["room_id"] = str(room.id)
         self.data["username"] = async_user.username
+        self.data["msgs_offset"] = str(offset)
         messages_json = await sync_to_async(messages_to_json)(messages)
         mocker.patch("chat.consumers.get_last_20_messages", return_value=[])
         mocker.patch(
@@ -240,7 +243,7 @@ class TestChatConsumerFetchMessages:
             ChatConsumer, "send_message", return_value=None
         )
         content = {
-            "command": "messages",
+            "command": "messages" if offset == 0 else "old_messages",
             "messages": messages_json,
         }
 

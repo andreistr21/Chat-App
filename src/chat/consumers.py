@@ -23,7 +23,7 @@ from chat.services import (
     save_channel_name,
 )
 
-# TODO: Update tests
+
 class ChatConsumer(AsyncWebsocketConsumer):
     reload_page_data = {"command": "reload_page"}
 
@@ -35,14 +35,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         Fetches last 20 messages with offset form database and sends to the
         user.
         """
-        offset = data["msgs_offset"]
+        offset = data.get("msgs_offset", "0")
         messages = await sync_to_async(get_last_20_messages)(
             data["room_id"], data["username"], offset
         )
         if messages is None:
             return await self.send_reload_page()
         content = {
-            "command": "messages" if offset == 0 else "old_messages",
+            "command": "messages" if offset == "0" else "old_messages",
             "messages": await sync_to_async(messages_to_json)(messages),
         }
         await self.send_message(content)

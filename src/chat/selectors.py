@@ -12,7 +12,7 @@ from chat.utils import construct_name_of_redis_list_for_channel_name
 
 
 def get_last_20_messages(
-    room_id_str: str, username: str, offset: int
+    room_id_str: str, username: str, offset: str
 ) -> List[Message] | None:
     """
     Returns last 20 messages with offset in room and removes them from unread table.
@@ -21,7 +21,7 @@ def get_last_20_messages(
     with atomic():
         messages = list(
             Message.objects.filter(room=room_id_UUID).order_by("-timestamp")[
-                offset : offset + 20
+                int(offset) : int(offset) + 20
             ][::-1]
         )
 
