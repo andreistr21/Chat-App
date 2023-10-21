@@ -80,6 +80,10 @@ html {
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-4: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  --header-height: 48px;
+  --message-input-height: 50px;
+  --room-info-and-actions-height: 40px;
 }
 
 body {
@@ -209,7 +213,7 @@ Header
 ==========
 */
 header {
-  height: 48px;
+  height: var(--header-height);
   display: flex;
   align-items: center;
   justify-content: end;
@@ -253,7 +257,7 @@ Chats list
 .messenger-section {
   display: grid;
   grid-template-columns: 1fr 3fr;
-  height: calc(100vh - 48px);
+  height: calc(100vh - var(--header-height));
 }
 
 .chats-list-section {
@@ -301,6 +305,7 @@ Chats list
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  text-transform: none;
 }
 
 .chat-card:hover {
@@ -333,19 +338,37 @@ Chats list
 Chat
 ==========
 */
-.room-info-and-actions > *,
+.room-info-and-actions > * {
+  color: var(--white);
+}
+.room-info-and-actions {
+  height: var(--room-info-and-actions-height);
+  background-color: var(--primary-600);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .chat-actions > * {
   color: var(--white);
 }
 
-.chat-section {
-  background-color: var(--primary-800);
+.chat-and-input {
+  height: calc(100% - var(--room-info-and-actions-height));
   display: flex;
   flex-direction: column;
   justify-content: end;
 }
+
+.chat-section {
+  background-color: var(--primary-800);
+}
 .chat-log {
-  max-height: calc(100vh - 48px - 50px);
+  max-height: calc(
+    100vh - var(--header-height) - var(--message-input-height) -
+      var(--room-info-and-actions-height)
+  );
   overflow-y: scroll;
   padding: 0 8px;
 }
@@ -376,6 +399,7 @@ Chat
 }
 
 .message-input {
+  height: var(--message-input-height);
   background-color: var(--primary-500);
   padding: 8px 8px;
   display: flex;
@@ -425,6 +449,6 @@ Form
 ==========
 */
 .form-section {
-  height: calc(100vh - 48px);
+  height: calc(100vh - var(--header-height));
   background-color: var(--primary-300);
 }

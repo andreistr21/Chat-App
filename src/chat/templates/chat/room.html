@@ -3,19 +3,21 @@
 {% load i18n %}
 {% block chat_section_block %}
     <div class="room-info-and-actions">
-        <p class="caht-room-name">{{ room_name }}</p>
+        <p class="chat-room-name">{{ room_name }}</p>
         <div class="chat-actions">
-            <a href="{% url "chat:add_members" room_id %}">Add members</a>
+            <a href="{% url "chat:add_members" room_id %}" class="btn">{% trans "Add members" %}</a>
         </div>
     </div>
-    <div id="chat-log" class="chat-log"></div>
-    <div class="message-input">
-        <input id="chat-message-input"
-               type="text"
-               placeholder="{% trans "Write a message..." %}" />
-        <button id="chat-message-submit" type="submit">
-            <img src="{% static "send.svg" %}" alt="alt" height=34 width=34 />
-        </button>
+    <div class="chat-and-input">
+        <div id="chat-log" class="chat-log"></div>
+        <div class="message-input">
+            <input id="chat-message-input"
+                   type="text"
+                   placeholder="{% trans "Write a message..." %}" />
+            <button id="chat-message-submit" type="submit">
+                <img src="{% static "send.svg" %}" alt="alt" height=34 width=34 />
+            </button>
+        </div>
     </div>
 {% endblock chat_section_block %}
 {% block script %}
@@ -40,7 +42,7 @@
                 'command': 'fetch_messages',
                 'room_id': roomId,
                 'username': username,
-                'msgs_offset': msgsOffset
+                'msgs_offset': msgsOffset.toString()
             }));
         }
 
