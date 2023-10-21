@@ -1,4 +1,5 @@
 {% extends "common/base.html" %}
+{% load static %}
 {% load i18n %}
 {% block content %}
     <section class="messenger-section">
@@ -18,7 +19,13 @@
                     </div>
                 </a>
             {% endfor %}
-            <a class="create-room-float-button" href="{% url "chat:create_room" %}">Add room</a>
+            <a class="create-room-float-button" href="{% url "chat:create_room" %}">
+                <img class="add-room-icon"
+                     src="{% static "add.svg" %}"
+                     alt="add room icon"
+                     height="50px"
+                     width="50px" />
+            </a>
         </section>
         <section class="chat-section">
             {% block chat_section_block %}

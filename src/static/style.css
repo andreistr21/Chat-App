@@ -257,6 +257,7 @@ Chats list
 }
 
 .chats-list-section {
+  position: relative;
   background-color: var(--primary-300);
   overflow-y: auto;
   min-width: 150px;
@@ -320,9 +321,11 @@ Chats list
 .create-room-float-button {
   position: fixed;
   bottom: 25px;
-  left: 25px;
-  width: 50px;
-  height: 50px;
+  right: 76%;
+}
+.add-room-icon {
+  filter: invert(14%) sepia(55%) saturate(4402%) hue-rotate(240deg)
+    brightness(92%) contrast(84%);
 }
 
 /* 
