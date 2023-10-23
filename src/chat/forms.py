@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from chat.models import ChatRoom
 
 
-# TODO: Add tests
 class ChatRoomForm(forms.ModelForm):
     class Meta:
         model = ChatRoom
