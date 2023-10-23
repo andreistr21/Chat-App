@@ -25,7 +25,6 @@ def index(request):
     )
 
 
-# TODO: Update tests
 @require_http_methods(["GET"])
 @login_required
 @chat_membership

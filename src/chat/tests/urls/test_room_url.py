@@ -46,6 +46,7 @@ def test_room_view(
     assert response.context["username"] == user.username
     assert list(response.context["chat_rooms"]) == list(expected_user_rooms)
     assert response.context["chats_info"] == expected_chats_info
+    assert response.context["room_name"] == expected_chats_info[0][1]
 
 
 @pytest.mark.parametrize(

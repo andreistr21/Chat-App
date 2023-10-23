@@ -17,7 +17,10 @@ def test_access_allowed(
     Tests room view with auth user that has membership in a chat.
     """
     mocker.patch("chat.views.get_user_chats")
-    mocker.patch("chat.views.chats_list")
+    mocker.patch(
+        "chat.views.chats_list",
+        return_value=[(room.id, "test room name", None, 5)],
+    )
 
     request = rf.get(reverse("chat:room", args=(str(room.id),)))
     request.user = room.admin
