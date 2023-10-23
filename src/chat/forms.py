@@ -28,7 +28,6 @@ class ChatRoomForm(forms.ModelForm):
         return instance
 
 
-# TODO: Add tests# TODO: Add tests
 class ChatRoomMembersForm(forms.Form):
     members_to_add = forms.CharField(
         label="Usernames",
@@ -37,9 +36,6 @@ class ChatRoomMembersForm(forms.Form):
         ),
         required=False,
     )
-
-    def __init__(self, *args, **kwargs):
-        super(ChatRoomMembersForm, self).__init__(*args, **kwargs)
 
     def update_members(self, chat_room_instance):
         if usernames := self.cleaned_data.get("members_to_add"):
