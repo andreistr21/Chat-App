@@ -10,14 +10,14 @@
         <link rel="stylesheet" href={% static 'style.css' %} />
         <title>
             {% block title %}
-                Messenger
+                {% trans "Messenger" %}
             {% endblock title %}
         </title>
     </head>
     <body>
         <header>
             <nav>
-                <a href="{% url "chat:index" %}" class="nav-link only-text-link">Chats List</a>
+                <a href="{% url "chat:index" %}" class="nav-link only-text-link">{% trans "Chats List" %}</a>
                 <div class="nav-right">
                     {% get_current_language as current_language_code %}
                     {% get_available_languages as languages %}

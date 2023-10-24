@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-13 10:16+0200\n"
+"POT-Creation-Date: 2023-10-24 16:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,19 +19,60 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\chat\templates\chat\index.html:22
+#: .\chat\forms.py:12
+msgid "Room name"
+msgstr ""
+
+#: .\chat\forms.py:20
+msgid "Optional"
+msgstr ""
+
+#: .\chat\forms.py:36
+msgid "Usernames"
+msgstr ""
+
+#: .\chat\forms.py:38
+msgid "Enter usernames separated by comma"
+msgstr ""
+
+#: .\chat\templates\chat\add_members.html:10
+#: .\chat\templates\chat\create_room.html:10
+msgid "Cancel"
+msgstr ""
+
+#: .\chat\templates\chat\add_members.html:11
+msgid "Add"
+msgstr ""
+
+#: .\chat\templates\chat\create_room.html:11
+msgid "Create"
+msgstr ""
+
+#: .\chat\templates\chat\index.html:33
 msgid "Select a chat to start messaging"
 msgstr "Select a chat to start messaging"
 
 #: .\chat\templates\chat\room.html:8
+msgid "Add members"
+msgstr ""
+
+#: .\chat\templates\chat\room.html:16
 msgid "Write a message..."
 msgstr ""
 
-#: .\templates\common\base.html:23
+#: .\templates\common\base.html:13
+msgid "Messenger"
+msgstr ""
+
+#: .\templates\common\base.html:20
+msgid "Chats List"
+msgstr ""
+
+#: .\templates\common\base.html:25
 msgid "Language"
 msgstr ""
 
-#: .\templates\common\base.html:37
+#: .\templates\common\base.html:39
 msgid "Log out"
 msgstr ""
 

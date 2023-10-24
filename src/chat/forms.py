@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 
 from chat.models import ChatRoom
 
@@ -8,14 +9,15 @@ class ChatRoomForm(forms.ModelForm):
     class Meta:
         model = ChatRoom
         fields = ("room_name",)
-        
+        labels = {"room_name": _("Room name")}
+
     def __init__(self, *args, **kwargs):
         """
         Grants access to the request object.
-        """        
+        """
         self.request = kwargs.pop("request")
         super(ChatRoomForm, self).__init__(*args, **kwargs)
-        self.fields["room_name"].widget.attrs["placeholder"] = "Optional"
+        self.fields["room_name"].widget.attrs["placeholder"] = _("Optional")
 
     def save(self, commit=True):
         instance = super(ChatRoomForm, self).save(commit=False)
@@ -31,9 +33,9 @@ class ChatRoomForm(forms.ModelForm):
 
 class ChatRoomMembersForm(forms.Form):
     members_to_add = forms.CharField(
-        label="Usernames",
+        label=_("Usernames"),
         widget=forms.TextInput(
-            attrs={"placeholder": "Enter usernames separated by comma"}
+            attrs={"placeholder": _("Enter usernames separated by comma")}
         ),
         required=False,
     )
