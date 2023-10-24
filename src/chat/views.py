@@ -66,7 +66,6 @@ def create_room(request):
     )
 
 
-# TODO: Add tests
 @require_http_methods(["GET", "POST"])
 @login_required
 @chat_membership
