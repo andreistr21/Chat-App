@@ -17,27 +17,30 @@
     <body>
         <header>
             <nav>
-                {% get_current_language as current_language_code %}
-                {% get_available_languages as languages %}
-                {% get_language_info_list for languages as languages_info %}
-                <p>{% trans "Language" %}:</p>
-                <ul class="languages-list">
-                    {% for language in languages_info %}
-                        <li>
-                            <a href="/{{ language.code }}/"
-                               class="language-link only-text-link {% if language.code == current_language_code %}selected-language{% endif %}">{{ language.name_local }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-                {% if request.user.is_authenticated %}
-                    <h5 class="username-text">{{ request.user.username }}</h5>
-                    <ul class="nav-links">
-                        <li>
-                            <a href="{% url "users:logout" %}" class="nav-link btn">{% trans "Log out" %}</a>
-                        </li>
+                <a href="{% url "chat:index" %}" class="nav-link only-text-link">Chats List</a>
+                <div class="nav-right">
+                    {% get_current_language as current_language_code %}
+                    {% get_available_languages as languages %}
+                    {% get_language_info_list for languages as languages_info %}
+                    <p>{% trans "Language" %}:</p>
+                    <ul class="languages-list">
+                        {% for language in languages_info %}
+                            <li>
+                                <a href="/{{ language.code }}/"
+                                   class="language-link only-text-link
+                                          {% if language.code == current_language_code %}selected-language{% endif %}">{{ language.name_local }}</a>
+                            </li>
+                        {% endfor %}
                     </ul>
-                {% endif %}
+                    {% if request.user.is_authenticated %}
+                        <h5 class="username-text">{{ request.user.username }}</h5>
+                        <ul class="nav-links">
+                            <li>
+                                <a href="{% url "users:logout" %}" class="nav-link btn logout-btn">{% trans "Log out" %}</a>
+                            </li>
+                        </ul>
+                    {% endif %}
+                </div>
             </nav>
         </header>
         {% block content %}

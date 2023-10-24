@@ -8,13 +8,14 @@ class ChatRoomForm(forms.ModelForm):
     class Meta:
         model = ChatRoom
         fields = ("room_name",)
-
+        
     def __init__(self, *args, **kwargs):
         """
         Grants access to the request object.
-        """
+        """        
         self.request = kwargs.pop("request")
         super(ChatRoomForm, self).__init__(*args, **kwargs)
+        self.fields["room_name"].widget.attrs["placeholder"] = "Optional"
 
     def save(self, commit=True):
         instance = super(ChatRoomForm, self).save(commit=False)

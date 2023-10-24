@@ -1,11 +1,15 @@
 {% extends "common/base.html" %}
+{% load i18n %}
 {% block content %}
     <section class="form-section">
         <section class="center-section">
             <form method="post">
                 {% csrf_token %}
                 {{ chat_room_members_form.as_p }}
-                <input type="submit" value="Submit" />
+                <div class="form-buttons">
+                    <a class="btn" href="{% url "chat:index" %}">{% trans "Cancel" %}</a>
+                    <input class="btn" type="submit" value="{% trans "Add" %}" />
+                </div>
             </form>
         </section>
     </section>
