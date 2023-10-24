@@ -32,7 +32,7 @@ def test_access_allowed(
 
 @pytest.mark.django_db
 def test_no_chat_membership_redirect(
-    rf: RequestFactory, mocker: MockerFixture, room: ChatRoom
+    rf: RequestFactory, room: ChatRoom
 ):
     """
     Tests room view with auth user that doesn't has membership in a chat.
@@ -49,7 +49,7 @@ def test_no_chat_membership_redirect(
 
 @pytest.mark.django_db
 def test_anonymous_user_redirect(
-    rf: RequestFactory, mocker: MockerFixture, room: ChatRoom
+    rf: RequestFactory, room: ChatRoom
 ):
     """
     Tests room view with not auth user.

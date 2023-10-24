@@ -46,7 +46,6 @@ def room(request, room_id: str):
     )
 
 
-# TODO: Add tests
 @require_http_methods(["GET", "POST"])
 @login_required
 def create_room(request):
