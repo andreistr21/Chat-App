@@ -26,7 +26,7 @@ def test_url_pattern_and_view_used(
 
 
 @pytest.mark.django_db
-def test_index_url_get_render(
+def test_url_get_render(
     user_client: Client, rf: RequestFactory, user: User
 ):
     request = rf.get(URL)
@@ -44,7 +44,7 @@ def test_index_url_get_render(
 
 
 @pytest.mark.django_db
-def test_index_url_post_render(
+def test_url_post_render(
     user_client: Client, rf: RequestFactory, mocker: MockerFixture, user: User
 ):
     mocker.patch.object(ChatRoomForm, "is_valid", return_value=False)
@@ -65,7 +65,7 @@ def test_index_url_post_render(
 
 
 @pytest.mark.django_db
-def test_index_url_post_redirect(user_client: Client):
+def test_url_post_redirect(user_client: Client):
     data = {"room_name": "room name"}
     response = user_client.post(URL, data=data)
 
