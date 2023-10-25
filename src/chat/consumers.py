@@ -56,7 +56,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         author = data["from"]
         author_obj = await sync_to_async(get_user)(author)
         room_obj = await sync_to_async(get_room)(data["room_id"])
-        # TODO: Add handler to frontend. (Something need to be done in case room or author doesn't exists anymore)
         if room_obj is None or author_obj is None:
             return self.send_reload_page()
         message = await sync_to_async(create_message)(

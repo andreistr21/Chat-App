@@ -12,5 +12,7 @@ This is a simple chat application, with the ability to log in, create chats with
 - django-channels
 - redis
 - pytest
+- HTML
+- CSS
 
 # Project presentation
