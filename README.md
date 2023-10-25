@@ -16,3 +16,6 @@ This is a simple chat application, with the ability to log in, create chats with
 - CSS
 
 # Project presentation
+
+https://github.com/andreistr21/Chat-App/assets/60103919/5a3bd336-3a3d-4d8a-86b7-1930b39760a9
+
